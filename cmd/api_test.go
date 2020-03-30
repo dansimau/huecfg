@@ -17,9 +17,12 @@ func TestLights(t *testing.T) {
 	server := testutil.ServeMocksFromFile(mock)
 	defer server.Close()
 
-	hue := hue.NewConn(server.URL, "test")
-	resp, err := hue.Lights.GetAll()
+	api := hue.API{
+		Host:     server.URL,
+		Username: "test",
+	}
+	resp, err := api.GetLights()
 	require.NoError(t, err)
 
-	assert.Equal(t, len(mock.HTTPResponse().Body), len(resp.ResponseData.Bytes()))
+	assert.Equal(t, mock.HTTPResponse().Body, resp)
 }

@@ -14,7 +14,7 @@ type ConfigAPI struct {
 
 // Config represents a config object as returned by the Hue Bridge API.
 type Config struct {
-	*ResponseData
+	*responseData
 
 	UTC        *AbsoluteTime
 	APIVersion string
@@ -88,7 +88,7 @@ type Config struct {
 
 // CreateUserResponse is the response from the user create API.
 type CreateUserResponse struct {
-	*ResponseData
+	*responseData
 
 	Success struct {
 		Username string
@@ -133,7 +133,7 @@ func (h *ConfigAPI) CreateUser(deviceType string, generateClientKey bool) (*Crea
 	if err := json.Unmarshal(content, &obj); err != nil {
 		return nil, err
 	}
-	obj.ResponseData = &ResponseData{content}
+	obj.responseData = &responseData{content}
 
 	return obj, nil
 }
@@ -155,7 +155,7 @@ func (h *ConfigAPI) Get() (*Config, error) {
 	if err := json.Unmarshal(content, &obj); err != nil {
 		return nil, err
 	}
-	obj.ResponseData = &ResponseData{content}
+	obj.responseData = &responseData{content}
 
 	return obj, nil
 }

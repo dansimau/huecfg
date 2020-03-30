@@ -113,12 +113,12 @@ func (h *Hue) requireUsername() (username string) {
 	return h.username
 }
 
-// ResponseData holds the raw response from the Hue Bridge API response.
-type ResponseData struct {
+// responseData holds the raw response from the Hue Bridge API response.
+type responseData struct {
 	bytes []byte
 }
 
 // Bytes returns the original (JSON) response from the Hue Bridge API.
-func (r *ResponseData) Bytes() []byte {
+func (r *responseData) Bytes() []byte {
 	return r.bytes
 }

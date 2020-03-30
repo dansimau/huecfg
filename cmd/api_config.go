@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dansimau/huecfg/pkg/hue"
 	"github.com/dansimau/huecfg/pkg/jsonutil"
 )
 
@@ -18,17 +17,14 @@ type apiConfigCmd struct {
 type apiConfigGetCmd struct{}
 
 func (c *apiConfigGetCmd) Execute(args []string) error {
-	bridge := hue.NewConn(api.Host, api.Username)
-	if len(cmd.Verbose) > 0 {
-		bridge.Debug = true
-	}
+	bridge := api.getHueAPI()
 
-	config, err := bridge.Config.Get()
+	respBytes, err := bridge.GetConfig()
 	if err != nil {
 		return err
 	}
 
-	if err := jsonutil.PrintBytes(config.ResponseData.Bytes()); err != nil {
+	if err := jsonutil.PrintBytes(respBytes); err != nil {
 		return err
 	}
 
@@ -42,17 +38,14 @@ type apiConfigCreateUserCmd struct {
 }
 
 func (c *apiConfigCreateUserCmd) Execute(args []string) error {
-	bridge := hue.NewConn(api.Host, api.Username)
-	if len(cmd.Verbose) > 0 {
-		bridge.Debug = true
-	}
+	bridge := api.getHueAPI()
 
-	createUserResponse, err := bridge.Config.CreateUser(c.DeviceType, c.GenerateClientKey)
+	respBytes, err := bridge.CreateUser(c.DeviceType, c.GenerateClientKey)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
 	}
 
-	if err := jsonutil.PrintBytes(createUserResponse.ResponseData.Bytes()); err != nil {
+	if err := jsonutil.PrintBytes(respBytes); err != nil {
 		return err
 	}
 

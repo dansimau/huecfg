@@ -7,13 +7,13 @@ import (
 	"github.com/dansimau/huecfg/pkg/jsonutil"
 )
 
-// huecfg api lights ...
-type apiLightsCmd struct{}
+// huecfg api groups ...
+type apiGroupsCmd struct{}
 
-func (c *apiLightsCmd) Execute(args []string) error {
+func (c *apiGroupsCmd) Execute(args []string) error {
 	bridge := api.getHueAPI()
 
-	respBytes, err := bridge.GetLights()
+	respBytes, err := bridge.GetGroups()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -25,17 +25,17 @@ func (c *apiLightsCmd) Execute(args []string) error {
 	return nil
 }
 
-// huecfg api lights get ...
-type apiLightsCmdGet struct {
+// huecfg api groups get ...
+type apiGroupsCmdGet struct {
 	Arguments struct {
 		ID string
-	} `positional-args:"true" required:"true" positional-arg-name:"light-ID"`
+	} `positional-args:"true" required:"true" positional-arg-name:"group-ID"`
 }
 
-func (c *apiLightsCmdGet) Execute(args []string) error {
+func (c *apiGroupsCmdGet) Execute(args []string) error {
 	bridge := api.getHueAPI()
 
-	respBytes, err := bridge.GetLight(c.Arguments.ID)
+	respBytes, err := bridge.GetGroup(c.Arguments.ID)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

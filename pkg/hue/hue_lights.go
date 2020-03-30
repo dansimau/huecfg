@@ -14,7 +14,7 @@ type LightsAPI struct {
 
 // Light represents a light object returned by the Hue Bridge.
 type Light struct {
-	*ResponseData
+	*responseData
 
 	// The hardware model of the light.
 	ModelID          string
@@ -74,9 +74,15 @@ type Light struct {
 
 // Lights represents a map of lights returned by the Hue Bridge.
 type Lights struct {
-	*ResponseData
+	*responseData
 
 	m map[string]*Light
+}
+
+func NewLights(m map[string]*Light) *Lights {
+	return &Lights{
+		m: m,
+	}
 }
 
 // All returns a map of lights, indexed by string ID.
@@ -114,7 +120,7 @@ func (h *LightsAPI) GetAll() (*Lights, error) {
 
 	return &Lights{
 		m:            obj,
-		ResponseData: &ResponseData{content},
+		responseData: &responseData{content},
 	}, nil
 }
 
@@ -139,7 +145,7 @@ func (h *LightsAPI) Get(ID string) (*Light, error) {
 	if err := json.Unmarshal(content, obj); err != nil {
 		return nil, err
 	}
-	obj.ResponseData = &ResponseData{content}
+	obj.responseData = &responseData{content}
 
 	return obj, nil
 }

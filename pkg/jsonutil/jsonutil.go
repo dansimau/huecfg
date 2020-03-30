@@ -2,6 +2,7 @@ package jsonutil
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 )
@@ -20,6 +21,7 @@ func FprintBytes(w io.Writer, data []byte) error {
 	}
 
 	_, err = w.Write(output)
+	_, err = fmt.Fprintln(w, "")
 	return err
 }
 
