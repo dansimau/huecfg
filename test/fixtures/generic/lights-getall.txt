@@ -1,0 +1,85 @@
+HTTP/1.1 200 OK
+Connection: close
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE, HEAD
+Access-Control-Allow-Origin: *
+Access-Control-Max-Age: 3600
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Cache-Control: no-store
+Content-Security-Policy: default-src 'self'
+Content-Type: application/json
+Date: Sun, 29 Mar 2020 14:21:49 GMT
+Expires: Mon, 1 Aug 2011 09:00:00 GMT
+Pragma: no-cache
+Pragma: no-cache
+Server: nginx
+X-Content-Type-Options: nosniff
+X-Xss-Protection: 1
+
+{
+"1": {
+        "state": {
+            "on": false,
+            "bri": 1,
+            "hue": 33761,
+            "sat": 254,
+            "effect": "none",
+            "xy": [
+                0.3171,
+                0.3366
+            ],
+            "ct": 159,
+            "alert": "none",
+            "colormode": "xy",
+            "mode": "homeautomation",
+            "reachable": true
+        },
+        "swupdate": {
+            "state": "noupdates",
+            "lastinstall": "2018-01-02T19:24:20"
+        },
+        "type": "Extended color light",
+        "name": "Hue color lamp 7",
+        "modelid": "LCT007",
+        "manufacturername": "Philips",
+        "productname": "Hue color lamp",
+        "capabilities": {
+            "certified": true,
+            "control": {
+                "mindimlevel": 5000,
+                "maxlumen": 600,
+                "colorgamuttype": "B",
+                "colorgamut": [
+                    [
+                        0.675,
+                        0.322
+                    ],
+                    [
+                        0.409,
+                        0.518
+                    ],
+                    [
+                        0.167,
+                        0.04
+                    ]
+                ],
+                "ct": {
+                    "min": 153,
+                    "max": 500
+                }
+            },
+            "streaming": {
+                "renderer": true,
+                "proxy": false
+            }
+        },
+        "config": {
+            "archetype": "sultanbulb",
+            "function": "mixed",
+            "direction": "omnidirectional"
+        },
+        "uniqueid": "00:17:88:01:00:bd:c7:b9-0b",
+        "swversion": "5.105.0.21169"
+    }
+}

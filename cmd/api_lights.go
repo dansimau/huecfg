@@ -8,9 +8,15 @@ import (
 )
 
 // huecfg api lights ...
-type apiLightsCmd struct{}
+type apiLightsCmd struct {
+	All *apiLightsCmdAll `command:"all" description:"Gets a list of all lights that have been discovered by the bridge."`
+	Get *apiLightsCmdGet `command:"get" description:"Gets the attributes and state of a given light."`
+}
 
-func (c *apiLightsCmd) Execute(args []string) error {
+// huecfg api lights all
+type apiLightsCmdAll struct{}
+
+func (c *apiLightsCmdAll) Execute(args []string) error {
 	bridge := api.getHueAPI()
 
 	respBytes, err := bridge.GetLights()
@@ -28,14 +34,14 @@ func (c *apiLightsCmd) Execute(args []string) error {
 // huecfg api lights get ...
 type apiLightsCmdGet struct {
 	Arguments struct {
-		ID string
+		LightID int `description:"ID of the light to get attributes of."`
 	} `positional-args:"true" required:"true" positional-arg-name:"light-ID"`
 }
 
 func (c *apiLightsCmdGet) Execute(args []string) error {
 	bridge := api.getHueAPI()
 
-	respBytes, err := bridge.GetLight(c.Arguments.ID)
+	respBytes, err := bridge.GetLight(c.Arguments.LightID)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

@@ -2,20 +2,11 @@ package hue
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
-	"io/ioutil"
 )
-
-// LightsAPI is the API for lights on the Hue Bridge.
-type LightsAPI struct {
-	hue *Hue
-}
 
 // Light represents a light object returned by the Hue Bridge.
 type Light struct {
-	*responseData
-
+	ID int
 	// The hardware model of the light.
 	ModelID          string
 	ManufacturerName string
@@ -72,80 +63,38 @@ type Light struct {
 	}
 }
 
-// Lights represents a map of lights returned by the Hue Bridge.
-type Lights struct {
-	*responseData
-
-	m map[string]*Light
-}
-
-func NewLights(m map[string]*Light) *Lights {
-	return &Lights{
-		m: m,
-	}
-}
-
-// All returns a map of lights, indexed by string ID.
-func (l *Lights) All() map[string]*Light {
-	return l.m
-}
-
-// ByID returns a light from the map, by string ID. If the light doesn't exist,
-// this method returns nil.
-func (l *Lights) ByID(ID string) *Light {
-	item, ok := l.m[ID]
-	if !ok {
-		return nil
-	}
-	return item
-}
-
-// GetAll gets a list of all lights that have been discovered by the bridge.
-func (h *LightsAPI) GetAll() (*Lights, error) {
-	resp, err := h.hue.httpGet(fmt.Sprintf("%s/api/%s/lights", h.hue.host, h.hue.requireUsername()))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	content, err := ioutil.ReadAll(resp.Body)
+// GetLights gets a list of all lights that have been discovered by the bridge.
+func (h *Hue) GetLights() (map[int]*Light, error) {
+	respBytes, err := h.API.GetLights()
 	if err != nil {
 		return nil, err
 	}
 
-	var obj map[string]*Light
-	if err := json.Unmarshal(content, &obj); err != nil {
+	var obj map[int]*Light
+	if err := json.Unmarshal(respBytes, &obj); err != nil {
 		return nil, err
 	}
 
-	return &Lights{
-		m:            obj,
-		responseData: &responseData{content},
-	}, nil
+	for ID, light := range obj {
+		light.ID = ID
+	}
+
+	return obj, nil
 }
 
-// Get light attributes and state.
-func (h *LightsAPI) Get(ID string) (*Light, error) {
-	if ID == "" {
-		return nil, errors.New("ID cannot be empty")
-	}
-
-	resp, err := h.hue.httpGet(fmt.Sprintf("%s/api/%s/lights/%s", h.hue.host, h.hue.requireUsername(), ID))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	content, err := ioutil.ReadAll(resp.Body)
+// GetLight gets light attributes and state.
+func (h *Hue) GetLight(ID int) (*Light, error) {
+	respBytes, err := h.API.GetLight(ID)
 	if err != nil {
 		return nil, err
 	}
 
 	var obj *Light
-	if err := json.Unmarshal(content, obj); err != nil {
+	if err := json.Unmarshal(respBytes, obj); err != nil {
 		return nil, err
 	}
-	obj.responseData = &responseData{content}
+
+	obj.ID = ID
 
 	return obj, nil
 }

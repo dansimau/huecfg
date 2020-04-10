@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
+	"strings"
 
 	"github.com/dansimau/huecfg/pkg/jsonutil"
 )
@@ -103,5 +104,13 @@ func (api *API) username() string {
 }
 
 func (api *API) url(path string) (url string, err error) {
-	return fmt.Sprintf("http://%s%s", api.Host, path), nil
+	urlParts := []string{}
+
+	if !strings.HasPrefix(api.Host, "http://") && !strings.HasPrefix(api.Host, "https://") {
+		urlParts = append(urlParts, "http://") // TODO: Use TLS by default
+	}
+
+	urlParts = append(urlParts, api.Host, path)
+
+	return strings.Join(urlParts, ""), nil
 }

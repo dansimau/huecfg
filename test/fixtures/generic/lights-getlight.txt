@@ -1,0 +1,37 @@
+HTTP/1.1 200 OK
+Connection: close
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE, HEAD
+Access-Control-Allow-Origin: *
+Access-Control-Max-Age: 3600
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Cache-Control: no-store
+Content-Security-Policy: default-src 'self'
+Content-Type: application/json
+Date: Sun, 29 Mar 2020 14:21:49 GMT
+Expires: Mon, 1 Aug 2011 09:00:00 GMT
+Pragma: no-cache
+Pragma: no-cache
+Server: nginx
+X-Content-Type-Options: nosniff
+X-Xss-Protection: 1
+
+{
+	"state": {
+		"hue": 50000,
+		"on": true,
+		"effect": "none",
+		"alert": "none",
+		"bri": 200,
+		"sat": 200,
+		"ct": 500,
+		"xy": [0.5, 0.5],
+		"reachable": true,
+		"colormode": "hs"
+	},
+	"type": "Living Colors",
+	"name": "LC 1",
+	"modelid": "LC0015",
+	"swversion": "1.0.3"
+}

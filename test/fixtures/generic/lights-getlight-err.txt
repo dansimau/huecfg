@@ -1,0 +1,28 @@
+HTTP/1.1 200 OK
+Connection: close
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE, HEAD
+Access-Control-Allow-Origin: *
+Access-Control-Max-Age: 3600
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Cache-Control: no-store
+Content-Security-Policy: default-src 'self'
+Content-Type: application/json
+Date: Tue, 31 Mar 2020 19:52:26 GMT
+Expires: Mon, 1 Aug 2011 09:00:00 GMT
+Pragma: no-cache
+Pragma: no-cache
+Server: nginx
+X-Content-Type-Options: nosniff
+X-Xss-Protection: 1
+
+[
+  {
+    "error": {
+      "address": "/lights/foo",
+      "description": "resource, /lights/foo, not available",
+      "type": 3
+    }
+  }
+]
