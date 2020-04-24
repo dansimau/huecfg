@@ -11,7 +11,7 @@ import (
 type apiSchedulesCmd struct{}
 
 func (c *apiSchedulesCmd) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetSchedules()
 	if err != nil {
@@ -28,12 +28,12 @@ func (c *apiSchedulesCmd) Execute(args []string) error {
 // huecfg api schedules get ...
 type apiSchedulesCmdGet struct {
 	Arguments struct {
-		ID string
+		ID int
 	} `positional-args:"true" required:"true" positional-arg-name:"schedule-ID"`
 }
 
 func (c *apiSchedulesCmdGet) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetSchedule(c.Arguments.ID)
 	if err != nil {

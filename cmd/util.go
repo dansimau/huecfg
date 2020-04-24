@@ -10,22 +10,25 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-func lookupField(s interface{}, path string) (*reflect.Value, error) {
+var stringerType = reflect.TypeOf((*fmt.Stringer)(nil)).Elem()
+
+func lookupField(s interface{}, path string) (reflect.Value, error) {
 	res, err := lookup.LookupStringI(s, path)
 	if err != nil {
 		if err == lookup.ErrKeyNotFound {
-			return nil, fmt.Errorf("%w: %v", err, path)
+			return reflect.Value{}, fmt.Errorf("%w: %v", err, path)
 		}
-		return nil, err
+		return reflect.Value{}, err
 	}
 
-	return &res, nil
+	return res, nil
 }
 
 func printTable(rows [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader(rows[0])
 	table.SetAutoFormatHeaders(false)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetHeader(rows[0])
 
 	for _, row := range rows[1:] {
 		table.Append(row)
@@ -34,7 +37,7 @@ func printTable(rows [][]string) {
 	table.Render()
 }
 
-func reflectValueToString(v *reflect.Value) string {
+func reflectValueToString(v reflect.Value) string {
 	switch v.Kind() {
 	case reflect.String:
 		return v.String()
@@ -47,6 +50,9 @@ func reflectValueToString(v *reflect.Value) string {
 	case reflect.Int:
 		return strconv.Itoa(int(v.Int()))
 	default:
+		if v.Type().Implements(stringerType) {
+			return v.MethodByName("String").Call([]reflect.Value{})[0].String()
+		}
 		return fmt.Sprintf("<%s>", v.Type().String())
 	}
 }

@@ -25,8 +25,8 @@ type Light struct {
 			MinDimLevel    int
 			MaxLumen       int
 			ColorGamutType string
-			ColorGamut     [][]float64
-			CT             struct {
+			ColorGamut     [][]float64 // TODO: proper type
+			CT             struct {    // TODO: verify camelcase
 				Min int
 				Max int
 			}
@@ -37,19 +37,19 @@ type Light struct {
 		}
 	}
 
-	Config struct {
+	Config struct { // TODO: verify these types
 		Archetype string
 		Function  string
 		Direction string
 	}
 
-	State struct {
+	State struct { // TODO: verify all of these field types
 		On        bool
 		Bri       int
 		Hue       int
 		Sat       int
-		Effect    string
-		XY        []float64
+		Effect    string    // TODO: can be "none"
+		XY        []float64 // TODO: make this proper pair type
 		CT        int
 		Alert     string
 		ColorMode string
@@ -64,34 +64,36 @@ type Light struct {
 }
 
 // GetLights gets a list of all lights that have been discovered by the bridge.
-func (h *Hue) GetLights() (map[int]*Light, error) {
+func (h *Hue) GetLights() ([]Light, error) {
 	respBytes, err := h.API.GetLights()
 	if err != nil {
 		return nil, err
 	}
 
-	var obj map[int]*Light
-	if err := json.Unmarshal(respBytes, &obj); err != nil {
+	var objs map[int]Light
+	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
 
-	for ID, light := range obj {
-		light.ID = ID
+	var res = []Light{}
+	for ID, obj := range objs {
+		obj.ID = ID
+		res = append(res, obj)
 	}
 
-	return obj, nil
+	return res, nil
 }
 
 // GetLight gets light attributes and state.
-func (h *Hue) GetLight(ID int) (*Light, error) {
+func (h *Hue) GetLight(ID int) (Light, error) {
 	respBytes, err := h.API.GetLight(ID)
 	if err != nil {
-		return nil, err
+		return Light{}, err
 	}
 
-	var obj *Light
-	if err := json.Unmarshal(respBytes, obj); err != nil {
-		return nil, err
+	var obj Light
+	if err := json.Unmarshal(respBytes, &obj); err != nil {
+		return Light{}, err
 	}
 
 	obj.ID = ID

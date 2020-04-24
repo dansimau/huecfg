@@ -8,10 +8,16 @@ import (
 )
 
 // huecfg api groups ...
-type apiGroupsCmd struct{}
+type apiGroupsCmd struct {
+	All *apiGroupsAllCmd `command:"all" description:"Gets a list of all groups that have been added to the bridge."`
+	//Create *apiGroupsCreateCmd `command:"create" description:"Creates a new group containing the lights specified and optional name."`
+	Get *apiGroupsGetCmd `command:"get" description:"Gets the group attributes for a given group."`
+}
 
-func (c *apiGroupsCmd) Execute(args []string) error {
-	bridge := api.getHueAPI()
+type apiGroupsAllCmd struct{}
+
+func (c *apiGroupsAllCmd) Execute(args []string) error {
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetGroups()
 	if err != nil {
@@ -26,14 +32,14 @@ func (c *apiGroupsCmd) Execute(args []string) error {
 }
 
 // huecfg api groups get ...
-type apiGroupsCmdGet struct {
+type apiGroupsGetCmd struct {
 	Arguments struct {
-		ID string
+		ID int
 	} `positional-args:"true" required:"true" positional-arg-name:"group-ID"`
 }
 
-func (c *apiGroupsCmdGet) Execute(args []string) error {
-	bridge := api.getHueAPI()
+func (c *apiGroupsGetCmd) Execute(args []string) error {
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetGroup(c.Arguments.ID)
 	if err != nil {

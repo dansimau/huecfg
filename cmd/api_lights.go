@@ -9,15 +9,15 @@ import (
 
 // huecfg api lights ...
 type apiLightsCmd struct {
-	All *apiLightsCmdAll `command:"all" description:"Gets a list of all lights that have been discovered by the bridge."`
-	Get *apiLightsCmdGet `command:"get" description:"Gets the attributes and state of a given light."`
+	All *apiLightsAllCmd `command:"all" description:"Gets a list of all lights that have been discovered by the bridge."`
+	Get *apiLightsGetCmd `command:"get" description:"Gets the attributes and state of a given light."`
 }
 
 // huecfg api lights all
-type apiLightsCmdAll struct{}
+type apiLightsAllCmd struct{}
 
-func (c *apiLightsCmdAll) Execute(args []string) error {
-	bridge := api.getHueAPI()
+func (c *apiLightsAllCmd) Execute(args []string) error {
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetLights()
 	if err != nil {
@@ -32,14 +32,14 @@ func (c *apiLightsCmdAll) Execute(args []string) error {
 }
 
 // huecfg api lights get ...
-type apiLightsCmdGet struct {
+type apiLightsGetCmd struct {
 	Arguments struct {
 		LightID int `description:"ID of the light to get attributes of."`
 	} `positional-args:"true" required:"true" positional-arg-name:"light-ID"`
 }
 
-func (c *apiLightsCmdGet) Execute(args []string) error {
-	bridge := api.getHueAPI()
+func (c *apiLightsGetCmd) Execute(args []string) error {
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetLight(c.Arguments.LightID)
 	if err != nil {

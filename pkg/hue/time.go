@@ -14,9 +14,16 @@ type AbsoluteTime struct {
 	time.Time
 }
 
+func (t AbsoluteTime) String() string {
+	if t.Time.IsZero() {
+		return ""
+	}
+	return t.Time.String()
+}
+
 func (t *AbsoluteTime) UnmarshalJSON(b []byte) (err error) {
 	s := strings.Trim(string(b), "\"")
-	if s == "null" {
+	if s == "null" || s == "none" {
 		t.Time = time.Time{}
 		return
 	}

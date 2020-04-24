@@ -17,7 +17,7 @@ type apiConfigCmd struct {
 type apiConfigGetCmd struct{}
 
 func (c *apiConfigGetCmd) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetConfig()
 	if err != nil {
@@ -38,7 +38,7 @@ type apiConfigCreateUserCmd struct {
 }
 
 func (c *apiConfigCreateUserCmd) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.CreateUser(c.DeviceType, c.GenerateClientKey)
 	if err != nil {

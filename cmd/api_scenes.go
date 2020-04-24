@@ -11,7 +11,7 @@ import (
 type apiScenesCmd struct{}
 
 func (c *apiScenesCmd) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetScenes()
 	if err != nil {
@@ -28,12 +28,12 @@ func (c *apiScenesCmd) Execute(args []string) error {
 // huecfg api scenes get ...
 type apiScenesCmdGet struct {
 	Arguments struct {
-		ID string
+		ID int
 	} `positional-args:"true" required:"true" positional-arg-name:"scene-ID"`
 }
 
 func (c *apiScenesCmdGet) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetScene(c.Arguments.ID)
 	if err != nil {

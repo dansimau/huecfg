@@ -1,9 +1,9 @@
 package hue
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
+	"strconv"
 )
 
 // GetGroups gets a list of all groups that have been added to the bridge. A
@@ -21,12 +21,14 @@ func (api *API) GetGroups() ([]byte, error) {
 
 // GetGroup gets the group attributes, e.g. name, light membership and last
 // command for a given group.
-func (api *API) GetGroup(ID string) ([]byte, error) {
-	if ID == "" {
-		return nil, errors.New("ID cannot be empty")
-	}
+func (api *API) GetGroup(ID int) ([]byte, error) {
+	// if ID == "" {
+	// 	return nil, errors.New("ID cannot be empty")
+	// }
 
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/groups/%s", api.username(), ID))
+	strID := strconv.Itoa(ID)
+
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s/groups/%s", api.username(), strID))
 	if err != nil {
 		return nil, err
 	}

@@ -11,7 +11,7 @@ import (
 type apiRulesCmd struct{}
 
 func (c *apiRulesCmd) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetRules()
 	if err != nil {
@@ -28,12 +28,12 @@ func (c *apiRulesCmd) Execute(args []string) error {
 // huecfg api rules get ...
 type apiRulesCmdGet struct {
 	Arguments struct {
-		ID string
+		ID int
 	} `positional-args:"true" required:"true" positional-arg-name:"rule-ID"`
 }
 
 func (c *apiRulesCmdGet) Execute(args []string) error {
-	bridge := api.getHueAPI()
+	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetRule(c.Arguments.ID)
 	if err != nil {

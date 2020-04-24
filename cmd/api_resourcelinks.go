@@ -7,13 +7,13 @@ import (
 	"github.com/dansimau/huecfg/pkg/jsonutil"
 )
 
-// huecfg api sensors ...
-type apiSensorsCmd struct{}
+// huecfg api resourcelinks ...
+type apiResourceLinksCmd struct{}
 
-func (c *apiSensorsCmd) Execute(args []string) error {
+func (c *apiResourceLinksCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
-	respBytes, err := bridge.GetSensors()
+	respBytes, err := bridge.GetResourceLinks()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
@@ -25,17 +25,17 @@ func (c *apiSensorsCmd) Execute(args []string) error {
 	return nil
 }
 
-// huecfg api sensors get ...
-type apiSensorsCmdGet struct {
+// huecfg api resourcelinks get ...
+type apiResourceLinksCmdGet struct {
 	Arguments struct {
 		ID int
-	} `positional-args:"true" required:"true" positional-arg-name:"sensor-ID"`
+	} `positional-args:"true" required:"true" positional-arg-name:"resourcelink-ID"`
 }
 
-func (c *apiSensorsCmdGet) Execute(args []string) error {
+func (c *apiResourceLinksCmdGet) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
-	respBytes, err := bridge.GetSensor(c.Arguments.ID)
+	respBytes, err := bridge.GetResourceLink(c.Arguments.ID)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
