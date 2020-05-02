@@ -1,6 +1,7 @@
 package cmd
 
 //go:generate ./gen_list.sh OBJS_NAME=rules OBJS_TYPE=[]hue.Rule GET_OBJ_FUNC=GetRules()
+//go:generate ./gen_show.sh OBJ_NAME=rule GET_OBJ_FUNC=GetRule
 
 const rulesDefaultSortField = "ID"
 
@@ -35,4 +36,5 @@ func init() {
 
 type rulesCmd struct {
 	RulesList *rulesListCmd `command:"list" alias:"ls" description:"List rules"`
+	RulesShow *rulesShowCmd `command:"show" description:"Display the specified rule"`
 }

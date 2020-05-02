@@ -8,9 +8,14 @@ import (
 )
 
 // huecfg api sensors ...
-type apiSensorsCmd struct{}
+type apiSensorsCmd struct {
+	All *apiSensorsAllCmd `command:"all" description:"Gets a list of all sensors that have been added to the bridge."`
+	Get *apiSensorsGetCmd `command:"get" description:"Gets the sensor from the bridge with the given ID."`
+}
 
-func (c *apiSensorsCmd) Execute(args []string) error {
+type apiSensorsAllCmd struct{}
+
+func (c *apiSensorsAllCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetSensors()
@@ -26,13 +31,13 @@ func (c *apiSensorsCmd) Execute(args []string) error {
 }
 
 // huecfg api sensors get ...
-type apiSensorsCmdGet struct {
+type apiSensorsGetCmd struct {
 	Arguments struct {
-		ID int
+		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"sensor-ID"`
 }
 
-func (c *apiSensorsCmdGet) Execute(args []string) error {
+func (c *apiSensorsGetCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetSensor(c.Arguments.ID)

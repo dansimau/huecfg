@@ -5,14 +5,14 @@ import (
 )
 
 type Sensor struct {
-	ID int
+	ID string
 
 	ManufacturerName string
 	ModelID          string
 	Name             string
 	Recycle          bool
 	SWVersion        string
-	Type             string
+	Type             string // TODO: string enum?
 	UniqueID         string
 
 	Config struct {
@@ -32,14 +32,14 @@ func (h *Hue) GetSensors() ([]Sensor, error) {
 		return nil, err
 	}
 
-	var objs map[int]Sensor
+	var objs map[string]Sensor
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
 
 	var res = []Sensor{}
-	for ID, obj := range objs {
-		obj.ID = ID
+	for id, obj := range objs {
+		obj.ID = id
 		res = append(res, obj)
 	}
 
@@ -47,8 +47,8 @@ func (h *Hue) GetSensors() ([]Sensor, error) {
 }
 
 // GetSensor gets the sensor from the bridge with the given ID
-func (h *Hue) GetSensor(ID int) (Sensor, error) {
-	respBytes, err := h.API.GetSensor(ID)
+func (h *Hue) GetSensor(id string) (Sensor, error) {
+	respBytes, err := h.API.GetSensor(id)
 	if err != nil {
 		return Sensor{}, err
 	}
@@ -58,7 +58,7 @@ func (h *Hue) GetSensor(ID int) (Sensor, error) {
 		return Sensor{}, err
 	}
 
-	obj.ID = ID
+	obj.ID = id
 
 	return obj, nil
 }

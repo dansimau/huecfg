@@ -8,7 +8,10 @@ import (
 )
 
 // huecfg api scenes ...
-type apiScenesCmd struct{}
+type apiScenesCmd struct {
+	All *apiLightsAllCmd `command:"all" description:"Gets a list of all scenes currently stored in the bridge."`
+	Get *apiLightsGetCmd `command:"get" description:"Gets the attributes of a given scene."`
+}
 
 func (c *apiScenesCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
@@ -28,7 +31,7 @@ func (c *apiScenesCmd) Execute(args []string) error {
 // huecfg api scenes get ...
 type apiScenesCmdGet struct {
 	Arguments struct {
-		ID int
+		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"scene-ID"`
 }
 

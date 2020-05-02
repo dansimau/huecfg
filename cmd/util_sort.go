@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strconv"
 )
 
 // sortableGeneric is a struct containing a sort key and a generic value that
@@ -36,6 +37,12 @@ func (s sortableGenericSlice) Less(i, j int) bool {
 	case reflect.Int:
 		return s[i].sortKey.Int() < s[j].sortKey.Int()
 	case reflect.String:
+		// If strings can be compared as ints, do that first. This is to handle
+		// the fact that all Hue Bridge IDs are generally numbers. We want the
+		// sort to treat them as if they are real integers.
+		if res, err := cmpStrInt(s[i].sortKey.String(), s[j].sortKey.String()); err == nil {
+			return res
+		}
 		return s[i].sortKey.String() < s[j].sortKey.String()
 	}
 	return false
@@ -71,4 +78,17 @@ func sortByField(s []interface{}, path string) ([]interface{}, error) {
 	sort.Sort(res)
 
 	return res.Values(), nil
+}
+
+func cmpStrInt(i, j string) (bool, error) {
+	intI, err := strconv.Atoi(i)
+	if err != nil {
+		return false, err
+	}
+	intJ, err := strconv.Atoi(j)
+	if err != nil {
+		return false, err
+	}
+
+	return intI < intJ, nil
 }

@@ -8,9 +8,14 @@ import (
 )
 
 // huecfg api rules ...
-type apiRulesCmd struct{}
+type apiRulesCmd struct {
+	All *apiRulesAllCmd `command:"all" description:"Gets a list of all rules that are in the bridge."`
+	Get *apiRulesGetCmd `command:"get" description:"Returns the rule object with specified ID."`
+}
 
-func (c *apiRulesCmd) Execute(args []string) error {
+type apiRulesAllCmd struct{}
+
+func (c *apiRulesAllCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetRules()
@@ -26,13 +31,13 @@ func (c *apiRulesCmd) Execute(args []string) error {
 }
 
 // huecfg api rules get ...
-type apiRulesCmdGet struct {
+type apiRulesGetCmd struct {
 	Arguments struct {
-		ID int
+		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"rule-ID"`
 }
 
-func (c *apiRulesCmdGet) Execute(args []string) error {
+func (c *apiRulesGetCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetRule(c.Arguments.ID)

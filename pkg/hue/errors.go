@@ -1,5 +1,11 @@
 package hue
 
+import "errors"
+
+var (
+	errEmptyID = errors.New("ID cannot be empty")
+)
+
 // Error represents an error from the Hue Bridge API
 type Error struct {
 	Address     string

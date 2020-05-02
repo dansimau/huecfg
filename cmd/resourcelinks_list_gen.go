@@ -10,7 +10,7 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-func resourcelinkToGenericSlice(s []hue.ResourceLink) []interface{} {
+func resourcelinksToGenericSlice(s []hue.ResourceLink) []interface{} {
 	var res = make([]interface{}, len(s))
 	for i, obj := range s {
 		res[i] = obj
@@ -18,34 +18,34 @@ func resourcelinkToGenericSlice(s []hue.ResourceLink) []interface{} {
 	return res
 }
 
-type resourcelinkListCmd struct {
+type resourcelinksListCmd struct {
 	Fields string `long:"fields" description:"List of fields to include"`
 	Sort   string `long:"sort" description:"Field to sort by"`
 }
 
-func (c *resourcelinkListCmd) Execute(args []string) error {
+func (c *resourcelinksListCmd) Execute(args []string) error {
 	bridge := cmd.getHue()
 
-	resourcelink, err := bridge.GetResourceLinks()
+	resourcelinks, err := bridge.GetResourceLinks()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 		os.Exit(1)
 	}
 
-	fields := resourcelinkDefaultFields
+	fields := resourcelinksDefaultFields
 	if c.Fields != "" {
 		fields = []string{}
 		for _, fieldName := range strings.Split(c.Fields, ",") {
-			fields = append(fields, resourcelinkHeaderTransform.TransformInput(fieldName))
+			fields = append(fields, resourcelinksHeaderTransform.TransformInput(fieldName))
 		}
 	}
 
-	sortField := resourcelinkDefaultSortField
+	sortField := resourcelinksDefaultSortField
 	if c.Sort != "" {
-		sortField = strcase.ToCamel(resourcelinkHeaderTransform.TransformInput(c.Sort))
+		sortField = strcase.ToCamel(resourcelinksHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedresourcelink, err := sortByField(resourcelinkToGenericSlice(resourcelink), sortField)
+	sortedresourcelinks, err := sortByField(resourcelinksToGenericSlice(resourcelinks), sortField)
 	if err != nil {
 		return err
 	}
@@ -54,11 +54,11 @@ func (c *resourcelinkListCmd) Execute(args []string) error {
 
 	headerRow := []string{}
 	for _, fieldName := range fields {
-		headerRow = append(headerRow, resourcelinkHeaderTransform.TransformOutput(fieldName))
+		headerRow = append(headerRow, resourcelinksHeaderTransform.TransformOutput(fieldName))
 	}
 	rows = append(rows, headerRow)
 
-	for _, light := range sortedresourcelink {
+	for _, light := range sortedresourcelinks {
 		row := []string{}
 
 		for _, field := range fields {
@@ -67,7 +67,7 @@ func (c *resourcelinkListCmd) Execute(args []string) error {
 				return err
 			}
 
-			row = append(row, resourcelinkFieldTransform.TransformOutput(field, reflectValueToString(v)))
+			row = append(row, resourcelinksFieldTransform.TransformOutput(field, reflectValueToString(v)))
 		}
 
 		rows = append(rows, row)

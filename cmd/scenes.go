@@ -1,6 +1,7 @@
 package cmd
 
 //go:generate ./gen_list.sh OBJS_NAME=scenes OBJS_TYPE=[]hue.Scene GET_OBJ_FUNC=GetScenes()
+//go:generate ./gen_show.sh OBJ_NAME=scene GET_OBJ_FUNC=GetScene
 
 const scenesDefaultSortField = "ID"
 
@@ -20,4 +21,5 @@ func init() {
 
 type scenesCmd struct {
 	ScenesList *scenesListCmd `command:"list" alias:"ls" description:"List scenes"`
+	ScenesShow *scenesShowCmd `command:"show" description:"Gets the attributes of a given scene"`
 }

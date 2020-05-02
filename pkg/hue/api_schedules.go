@@ -3,7 +3,6 @@ package hue
 import (
 	"fmt"
 	"io/ioutil"
-	"strconv"
 )
 
 // GetSchedules gets a list of all schedules that have been added to the
@@ -19,14 +18,12 @@ func (api *API) GetSchedules() ([]byte, error) {
 }
 
 // GetSchedule gets all attributes for a schedule.
-func (api *API) GetSchedule(ID int) ([]byte, error) {
-	// if ID == "" {
-	// 	return nil, errors.New("ID cannot be empty")
-	// }
+func (api *API) GetSchedule(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
 
-	strID := strconv.Itoa(ID)
-
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/schedules/%s", api.username(), strID))
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s/schedules/%s", api.username(), id))
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,6 @@ package hue
 import (
 	"fmt"
 	"io/ioutil"
-	"strconv"
 )
 
 // GetScenes gets a list of all scenes currently stored in the bridge. Scenes
@@ -30,14 +29,12 @@ func (api *API) GetScenes() ([]byte, error) {
 // GetScene get the attributes of a given scene. Please note that lightstates
 // are displayed when an individual scene is retrieved (but not for all
 // scenes).
-func (api *API) GetScene(ID int) ([]byte, error) {
-	// if ID == "" {
-	// 	return nil, errors.New("ID cannot be empty")
-	// }
+func (api *API) GetScene(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
 
-	strID := strconv.Itoa(ID)
-
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/scenes/%s", api.username(), strID))
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
 	if err != nil {
 		return nil, err
 	}

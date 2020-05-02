@@ -5,7 +5,7 @@ import (
 )
 
 type Schedule struct {
-	ID int
+	ID string
 
 	// TODO: add descriptions to all the vars from: https://developers.meethue.com/develop/hue-api/3-schedules-api/
 	Name        string
@@ -27,22 +27,22 @@ func (h *Hue) GetSchedules() ([]Schedule, error) {
 		return nil, err
 	}
 
-	var objs map[int]Schedule
+	var objs map[string]Schedule
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
 
 	var res = []Schedule{}
-	for ID, obj := range objs {
-		obj.ID = ID
+	for id, obj := range objs {
+		obj.ID = id
 		res = append(res, obj)
 	}
 
 	return res, nil
 }
 
-func (h *Hue) GetSchedule(ID int) (Schedule, error) {
-	respBytes, err := h.API.GetSchedule(ID)
+func (h *Hue) GetSchedule(id string) (Schedule, error) {
+	respBytes, err := h.API.GetSchedule(id)
 	if err != nil {
 		return Schedule{}, err
 	}
@@ -52,7 +52,7 @@ func (h *Hue) GetSchedule(ID int) (Schedule, error) {
 		return Schedule{}, err
 	}
 
-	obj.ID = ID
+	obj.ID = id
 
 	return obj, nil
 }

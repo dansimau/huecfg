@@ -5,7 +5,7 @@ import (
 )
 
 type Rule struct {
-	ID int
+	ID string
 
 	Created        AbsoluteTime
 	Name           string
@@ -37,14 +37,14 @@ func (h *Hue) GetRules() ([]Rule, error) {
 		return nil, err
 	}
 
-	var objs map[int]Rule
+	var objs map[string]Rule
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
 
 	var res = []Rule{}
-	for ID, obj := range objs {
-		obj.ID = ID
+	for id, obj := range objs {
+		obj.ID = id
 		res = append(res, obj)
 	}
 
@@ -52,8 +52,8 @@ func (h *Hue) GetRules() ([]Rule, error) {
 }
 
 // GetRule returns a rule matching ID
-func (h *Hue) GetRule(ID int) (Rule, error) {
-	respBytes, err := h.API.GetRule(ID)
+func (h *Hue) GetRule(id string) (Rule, error) {
+	respBytes, err := h.API.GetRule(id)
 	if err != nil {
 		return Rule{}, err
 	}
@@ -63,7 +63,7 @@ func (h *Hue) GetRule(ID int) (Rule, error) {
 		return Rule{}, err
 	}
 
-	obj.ID = ID
+	obj.ID = id
 
 	return obj, nil
 }

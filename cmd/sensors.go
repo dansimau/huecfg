@@ -1,6 +1,7 @@
 package cmd
 
 //go:generate ./gen_list.sh OBJS_NAME=sensors OBJS_TYPE=[]hue.Sensor GET_OBJ_FUNC=GetSensors()
+//go:generate ./gen_show.sh OBJ_NAME=sensor GET_OBJ_FUNC=GetSensor
 
 const sensorsDefaultSortField = "ID"
 
@@ -27,4 +28,5 @@ func init() {
 
 type sensorsCmd struct {
 	SensorsList *sensorsListCmd `command:"list" alias:"ls" description:"List sensors"`
+	SensorsShow *sensorsShowCmd `command:"show" description:"Gets the sensor from the bridge with the given ID"`
 }

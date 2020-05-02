@@ -5,7 +5,7 @@ import (
 )
 
 type Scene struct {
-	ID int
+	ID string
 
 	// App specific data linked to the scene.  Each individual application
 	// should take responsibility for the data written in this field.
@@ -32,8 +32,7 @@ type Scene struct {
 	// in list will be created with current light state. The array is
 	// informational for GroupScene, it is generated automatically from the
 	// lights in the linked group.
-	// TODO: This data type is an int but the actual light IDs are strings?
-	Lights []int
+	Lights []string
 
 	// Indicates that the scene is locked by a rule or a schedule and cannot be
 	// deleted until all resources requiring or that reference the scene are
@@ -67,7 +66,7 @@ func (h *Hue) GetScenes() ([]Scene, error) {
 		return nil, err
 	}
 
-	var objs map[int]Scene
+	var objs map[string]Scene
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
@@ -81,7 +80,7 @@ func (h *Hue) GetScenes() ([]Scene, error) {
 	return res, nil
 }
 
-func (h *Hue) GetScene(ID int) (Scene, error) {
+func (h *Hue) GetScene(ID string) (Scene, error) {
 	respBytes, err := h.API.GetScene(ID)
 	if err != nil {
 		return Scene{}, err

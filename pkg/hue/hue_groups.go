@@ -5,7 +5,7 @@ import (
 )
 
 type Group struct {
-	ID int
+	ID string
 
 	Name   string
 	Lights []string // TODO: convert this to int, or convert IDs back to string?
@@ -30,22 +30,22 @@ func (h *Hue) GetGroups() ([]Group, error) {
 		return nil, err
 	}
 
-	var objs map[int]Group
+	var objs map[string]Group
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
 
 	var res = []Group{}
-	for ID, obj := range objs {
-		obj.ID = ID
+	for id, obj := range objs {
+		obj.ID = id
 		res = append(res, obj)
 	}
 
 	return res, nil
 }
 
-func (h *Hue) GetGroup(ID int) (Group, error) {
-	respBytes, err := h.API.GetGroup(ID)
+func (h *Hue) GetGroup(id string) (Group, error) {
+	respBytes, err := h.API.GetGroup(id)
 	if err != nil {
 		return Group{}, err
 	}
@@ -55,7 +55,7 @@ func (h *Hue) GetGroup(ID int) (Group, error) {
 		return Group{}, err
 	}
 
-	obj.ID = ID
+	obj.ID = id
 
 	return obj, nil
 }

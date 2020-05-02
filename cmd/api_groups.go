@@ -34,7 +34,7 @@ func (c *apiGroupsAllCmd) Execute(args []string) error {
 // huecfg api groups get ...
 type apiGroupsGetCmd struct {
 	Arguments struct {
-		ID int
+		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"group-ID"`
 }
 

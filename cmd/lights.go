@@ -1,5 +1,8 @@
 package cmd
 
+//go:generate ./gen_list.sh OBJS_NAME=lights OBJS_TYPE=[]hue.Light GET_OBJ_FUNC=GetLights()
+//go:generate ./gen_show.sh OBJ_NAME=light GET_OBJ_FUNC=GetLight
+
 var lightsDefaultFields = []string{
 	"ID",
 	"Name",
@@ -33,4 +36,5 @@ func init() {
 
 type lightsCmd struct {
 	LightsList *lightsListCmd `command:"list" alias:"ls" description:"List lights"`
+	LightsShow *lightsShowCmd `command:"show" description:"Gets the attributes and state of a given light"`
 }

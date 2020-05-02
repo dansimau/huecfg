@@ -34,14 +34,14 @@ func (c *apiLightsAllCmd) Execute(args []string) error {
 // huecfg api lights get ...
 type apiLightsGetCmd struct {
 	Arguments struct {
-		LightID int `description:"ID of the light to get attributes of."`
+		ID string `description:"ID of the light to get attributes of."`
 	} `positional-args:"true" required:"true" positional-arg-name:"light-ID"`
 }
 
 func (c *apiLightsGetCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
-	respBytes, err := bridge.GetLight(c.Arguments.LightID)
+	respBytes, err := bridge.GetLight(c.Arguments.ID)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}

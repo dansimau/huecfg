@@ -6,7 +6,7 @@ import (
 
 // Light represents a light object returned by the Hue Bridge.
 type Light struct {
-	ID int
+	ID string
 	// The hardware model of the light.
 	ModelID          string
 	ManufacturerName string
@@ -70,14 +70,14 @@ func (h *Hue) GetLights() ([]Light, error) {
 		return nil, err
 	}
 
-	var objs map[int]Light
+	var objs map[string]Light
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
 
 	var res = []Light{}
-	for ID, obj := range objs {
-		obj.ID = ID
+	for id, obj := range objs {
+		obj.ID = id
 		res = append(res, obj)
 	}
 
@@ -85,8 +85,8 @@ func (h *Hue) GetLights() ([]Light, error) {
 }
 
 // GetLight gets light attributes and state.
-func (h *Hue) GetLight(ID int) (Light, error) {
-	respBytes, err := h.API.GetLight(ID)
+func (h *Hue) GetLight(id string) (Light, error) {
+	respBytes, err := h.API.GetLight(id)
 	if err != nil {
 		return Light{}, err
 	}
@@ -96,7 +96,7 @@ func (h *Hue) GetLight(ID int) (Light, error) {
 		return Light{}, err
 	}
 
-	obj.ID = ID
+	obj.ID = id
 
 	return obj, nil
 }

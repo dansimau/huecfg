@@ -43,7 +43,7 @@ func TestAPIGetLight(t *testing.T) {
 		Host:     server.URL,
 		Username: "test",
 	}
-	resp, err := api.GetLight(1)
+	resp, err := api.GetLight("1")
 	require.NoError(t, err)
 
 	assert.Equal(t, mock.HTTPResponse().Body, resp)
@@ -63,7 +63,7 @@ func TestAPIGetLightErr(t *testing.T) {
 		Host:     server.URL,
 		Username: "test",
 	}
-	resp, err := api.GetLight(2)
+	resp, err := api.GetLight("2")
 	require.NoError(t, err)
 
 	assert.Equal(t, mock.HTTPResponse().Body, resp)

@@ -8,9 +8,14 @@ import (
 )
 
 // huecfg api schedules ...
-type apiSchedulesCmd struct{}
+type apiSchedulesCmd struct {
+	All *apiSchedulesAllCmd `command:"all" description:"Gets a list of all schedules that have been added to the bridge."`
+	Get *apiSchedulesGetCmd `command:"get" description:"Gets all attributes for a schedule."`
+}
 
-func (c *apiSchedulesCmd) Execute(args []string) error {
+type apiSchedulesAllCmd struct{}
+
+func (c *apiSchedulesAllCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetSchedules()
@@ -26,13 +31,13 @@ func (c *apiSchedulesCmd) Execute(args []string) error {
 }
 
 // huecfg api schedules get ...
-type apiSchedulesCmdGet struct {
+type apiSchedulesGetCmd struct {
 	Arguments struct {
-		ID int
+		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"schedule-ID"`
 }
 
-func (c *apiSchedulesCmdGet) Execute(args []string) error {
+func (c *apiSchedulesGetCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetSchedule(c.Arguments.ID)

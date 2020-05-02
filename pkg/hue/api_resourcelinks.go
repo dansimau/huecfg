@@ -3,7 +3,6 @@ package hue
 import (
 	"fmt"
 	"io/ioutil"
-	"strconv"
 )
 
 // GetResourceLinks gets a list of all resourcelinks that have been added to the
@@ -19,14 +18,12 @@ func (api *API) GetResourceLinks() ([]byte, error) {
 }
 
 // GetResourceLink gets all attributes for a resourcelink.
-func (api *API) GetResourceLink(ID int) ([]byte, error) {
-	// if ID == "" {
-	// 	return nil, errors.New("ID cannot be empty")
-	// }
+func (api *API) GetResourceLink(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
 
-	strID := strconv.Itoa(ID)
-
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/resourcelinks/%s", api.username(), strID))
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s/resourcelinks/%s", api.username(), id))
 	if err != nil {
 		return nil, err
 	}

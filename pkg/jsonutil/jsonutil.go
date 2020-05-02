@@ -21,6 +21,10 @@ func FprintBytes(w io.Writer, data []byte) error {
 	}
 
 	_, err = w.Write(output)
+	if err != nil {
+		return err
+	}
+
 	_, err = fmt.Fprintln(w, "")
 	return err
 }
@@ -29,4 +33,18 @@ func FprintBytes(w io.Writer, data []byte) error {
 // stdout.
 func PrintBytes(data []byte) error {
 	return FprintBytes(os.Stdout, data)
+}
+
+// Print takes a Go object and prints JSON to stdout.
+func Print(v interface{}) error {
+	bytes, err := json.MarshalIndent(v, "", "  ")
+	if err != nil {
+		return err
+	}
+	_, err = os.Stdout.Write(bytes)
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintln(os.Stdout, "")
+	return err
 }

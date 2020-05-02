@@ -9,7 +9,7 @@ type ResourceLinkType string
 const ResourceLinkTypeLink ResourceLinkType = "Link"
 
 type ResourceLink struct {
-	ID int
+	ID string
 
 	// Class of resourcelink given by application. The resourcelink class can be
 	// used to identify resourcelink with the same purpose, like classid 1 for
@@ -48,22 +48,22 @@ func (h *Hue) GetResourceLinks() ([]ResourceLink, error) {
 		return nil, err
 	}
 
-	var objs map[int]ResourceLink
+	var objs map[string]ResourceLink
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
 	}
 
 	var res = []ResourceLink{}
-	for ID, obj := range objs {
-		obj.ID = ID
+	for id, obj := range objs {
+		obj.ID = id
 		res = append(res, obj)
 	}
 
 	return res, nil
 }
 
-func (h *Hue) GetResourceLink(ID int) (ResourceLink, error) {
-	respBytes, err := h.API.GetResourceLink(ID)
+func (h *Hue) GetResourceLink(id string) (ResourceLink, error) {
+	respBytes, err := h.API.GetResourceLink(id)
 	if err != nil {
 		return ResourceLink{}, err
 	}
@@ -73,7 +73,7 @@ func (h *Hue) GetResourceLink(ID int) (ResourceLink, error) {
 		return ResourceLink{}, err
 	}
 
-	obj.ID = ID
+	obj.ID = id
 
 	return obj, nil
 }

@@ -3,7 +3,6 @@ package hue
 import (
 	"fmt"
 	"io/ioutil"
-	"strconv"
 )
 
 // GetRules gets a list of all rules that are in the bridge.
@@ -19,14 +18,12 @@ func (api *API) GetRules() ([]byte, error) {
 
 // GetRule returns a rule object with id matching <id> or an error if <id> is
 // not available.
-func (api *API) GetRule(ID int) ([]byte, error) {
-	// if ID == "" {
-	// 	return nil, errors.New("ID cannot be empty")
-	// }
+func (api *API) GetRule(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
 
-	strID := strconv.Itoa(ID)
-
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/rules/%s", api.username(), strID))
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s/rules/%s", api.username(), id))
 	if err != nil {
 		return nil, err
 	}

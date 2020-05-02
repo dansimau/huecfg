@@ -20,17 +20,24 @@ TODO
 `pkg/hue` Supported APIs
 ------------------------
 
-| API               | Read | Search | Create | Set |
-|-------------------|------|--------|--------|-----|
-| Lights            | [x]  |  [ ]   |  N/A   | [ ] |
-| Groups            | [x]  |  N/A   |  [ ]   | [ ] |
-| Schedules         | [x]  |  N/A   |  [ ]   | [ ] |
-| Scenes            | [x]  |  N/A   |  [ ]   | [ ] |
-| Sensors           | [x]  |  [ ]   |  N/A   | [ ] |
-| Rules             | [x]  |  N/A   |  [ ]   | [ ] |
-| Configuration     | [x]¹ |  N/A   |  N/A   | [ ] |
-| Info (deprecated) |  -   |   -    |   -    |  -  |
-| Resource links    | [x]  |  N/A   |  [ ]   | [ ] |
-| Capabilities      | [ ]  |  N/A   |  N/A   | N/A |
+**Key:**
+
+* ✅ = supported
+* 🚧 = under construction / planned
+* ❌ = no plans to support
+* - = not applicable
+
+| API               | List | Show | Search | Create | Set |
+|-------------------|------|------|--------|--------|-----|
+| Lights            |  ✅  |  🚧  |   🚧   |   -    |  🚧 |
+| Groups            |  ✅  |  🚧  |   -    |   🚧   |  🚧 |
+| Schedules         |  ✅  |  🚧  |   -    |   🚧   |  🚧 |
+| Scenes            |  ✅  |  ✅  |   -    |   🚧   |  🚧 |
+| Sensors           |  ✅  |  ✅  |   🚧   |   -    |  🚧 |
+| Rules             |  ✅  |  ✅  |   -    |   🚧   |  🚧 |
+| Configuration     |  ✅¹ |  🚧  |   -    |   -    |  🚧 |
+| Info (deprecated) |  ❌  |  ❌  |   ❌   |   ❌   |  ❌ |
+| Resource links    |  ✅  |  🚧  |   -    |   🚧   |  🚧 |
+| Capabilities      |  ✅  |  -   |   -    |   -    |  -  |
 
 ¹ "Get full state" not implemented

@@ -8,9 +8,14 @@ import (
 )
 
 // huecfg api resourcelinks ...
-type apiResourceLinksCmd struct{}
+type apiResourceLinksCmd struct {
+	All *apiResourceLinksAllCmd `command:"all" description:"Gets a list of all resourcelinks that are in the bridge."`
+	Get *apiResourceLinksGetCmd `command:"get" description:"Returns resourcelink object with the specified ID."`
+}
 
-func (c *apiResourceLinksCmd) Execute(args []string) error {
+type apiResourceLinksAllCmd struct{}
+
+func (c *apiResourceLinksAllCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetResourceLinks()
@@ -26,13 +31,13 @@ func (c *apiResourceLinksCmd) Execute(args []string) error {
 }
 
 // huecfg api resourcelinks get ...
-type apiResourceLinksCmdGet struct {
+type apiResourceLinksGetCmd struct {
 	Arguments struct {
-		ID int
+		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"resourcelink-ID"`
 }
 
-func (c *apiResourceLinksCmdGet) Execute(args []string) error {
+func (c *apiResourceLinksGetCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.GetResourceLink(c.Arguments.ID)

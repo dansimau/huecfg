@@ -3,7 +3,6 @@ package hue
 import (
 	"fmt"
 	"io/ioutil"
-	"strconv"
 )
 
 // GetLights gets a list of all lights that have been discovered by the bridge.
@@ -18,14 +17,12 @@ func (api *API) GetLights() ([]byte, error) {
 }
 
 // GetLight light attributes and state.
-func (api *API) GetLight(ID int) ([]byte, error) {
-	// if ID == "" {
-	// 	return nil, errors.New("ID cannot be empty")
-	// }
+func (api *API) GetLight(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
 
-	strID := strconv.Itoa(ID)
-
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/lights/%s", api.username(), strID))
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s/lights/%s", api.username(), id))
 	if err != nil {
 		return nil, err
 	}
