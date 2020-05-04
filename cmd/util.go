@@ -8,6 +8,7 @@ import (
 
 	"github.com/mcuadros/go-lookup"
 	"github.com/olekukonko/tablewriter"
+	"gopkg.in/yaml.v3"
 )
 
 var stringerType = reflect.TypeOf((*fmt.Stringer)(nil)).Elem()
@@ -55,4 +56,22 @@ func reflectValueToString(v reflect.Value) string {
 		}
 		return fmt.Sprintf("<%s>", v.Type().String())
 	}
+}
+
+// yamlMap takes a yaml.Node that is a map and returns a Go map with the values
+// of type yaml.Node.
+func yamlMap(node *yaml.Node) map[string]*yaml.Node {
+	m := make(map[string]*yaml.Node, len(node.Content)/2)
+
+	var key string
+	for i, node := range node.Content {
+		switch i % 2 {
+		case 0:
+			key = node.Value
+		case 1:
+			m[key] = node
+		}
+	}
+
+	return m
 }
