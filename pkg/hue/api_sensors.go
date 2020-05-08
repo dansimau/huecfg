@@ -22,7 +22,7 @@ func (api *API) GetSensor(id string) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s/sensors/%s", api.username(), id))
 	if err != nil {
 		return nil, err
 	}

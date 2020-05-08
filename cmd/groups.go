@@ -42,6 +42,7 @@ func (c *groupsShowCmd) PostProcessShowCmd(bytes []byte) ([]byte, error) {
 		// TODO: add lights cache and collapse into single API call?
 		light, err := bridge.GetLight(lightID.Value)
 		if err != nil {
+			// TODO: we should NOT error out if the resource is not found
 			return nil, err
 		}
 

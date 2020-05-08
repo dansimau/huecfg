@@ -9,17 +9,17 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type rulesShowCmd struct {
+type schedulesShowCmd struct {
 	Arguments struct {
 		ID string
-	} `positional-args:"true" required:"true" positional-arg-name:"rule-ID"`
+	} `positional-args:"true" required:"true" positional-arg-name:"schedule-ID"`
 }
 
-func (c *rulesShowCmd) showCmdPostProcessFuncExists() bool {
+func (c *schedulesShowCmd) showCmdPostProcessFuncExists() bool {
 	return reflect.ValueOf(c).MethodByName("PostProcessShowCmd").Kind() != reflect.Invalid
 }
 
-func (c *rulesShowCmd) showCmdPostProcessFuncCall(bytes []byte) ([]byte, error) {
+func (c *schedulesShowCmd) showCmdPostProcessFuncCall(bytes []byte) ([]byte, error) {
 	retVals := reflect.ValueOf(c).MethodByName("PostProcessShowCmd").Call([]reflect.Value{reflect.ValueOf(bytes)})
 
 	var err error
@@ -32,10 +32,10 @@ func (c *rulesShowCmd) showCmdPostProcessFuncCall(bytes []byte) ([]byte, error) 
 	return retVals[0].Bytes(), err
 }
 
-func (c *rulesShowCmd) Execute(args []string) error {
+func (c *schedulesShowCmd) Execute(args []string) error {
 	bridge := cmd.getHue()
 
-	resp, err := bridge.GetRule(c.Arguments.ID)
+	resp, err := bridge.GetSchedule(c.Arguments.ID)
 	if err != nil {
 		return err
 	}

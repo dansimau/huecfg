@@ -2,11 +2,11 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
+	"reflect"
 
 	"github.com/mikefarah/yq/v3/pkg/yqlib"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type sensorsShowCmd struct {
@@ -15,17 +15,41 @@ type sensorsShowCmd struct {
 	} `positional-args:"true" required:"true" positional-arg-name:"sensor-ID"`
 }
 
+func (c *sensorsShowCmd) showCmdPostProcessFuncExists() bool {
+	return reflect.ValueOf(c).MethodByName("PostProcessShowCmd").Kind() != reflect.Invalid
+}
+
+func (c *sensorsShowCmd) showCmdPostProcessFuncCall(bytes []byte) ([]byte, error) {
+	retVals := reflect.ValueOf(c).MethodByName("PostProcessShowCmd").Call([]reflect.Value{reflect.ValueOf(bytes)})
+
+	var err error
+
+	errVal := retVals[1].Interface()
+	if errVal != nil {
+		err = errVal.(error)
+	}
+
+	return retVals[0].Bytes(), err
+}
+
 func (c *sensorsShowCmd) Execute(args []string) error {
 	bridge := cmd.getHue()
 
 	resp, err := bridge.GetSensor(c.Arguments.ID)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		return err
 	}
 
 	bytes, err := yaml.Marshal(resp)
 	if err != nil {
 		return err
+	}
+
+	if c.showCmdPostProcessFuncExists() {
+		bytes, err = c.showCmdPostProcessFuncCall(bytes)
+		if err != nil {
+			return err
+		}
 	}
 
 	return yqlib.ColorizeAndPrint(bytes, os.Stdout)

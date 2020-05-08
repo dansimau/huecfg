@@ -13,11 +13,11 @@ type Schedule struct {
 	Command     struct {
 		Address string
 		Method  string
-		Body    string // TODO: check format here with api command; is it in fact a JSON string?
+		Body    interface{}
 	}
 	Status     string // TODO: turn into enabled/disable enum
 	AutoDelete bool
-	LocalTime  AbsoluteTime
+	LocalTime  string // TODO: Make this into a proper Go type
 	Recycle    bool
 }
 

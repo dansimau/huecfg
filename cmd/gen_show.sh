@@ -21,11 +21,11 @@ cat <<EOF>${OBJ_NAME}s_show_gen.go
 package cmd
 
 import (
-	"fmt"
 	"os"
+	"reflect"
 
 	"github.com/mikefarah/yq/v3/pkg/yqlib"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type ${OBJ_NAME}sShowCmd struct {
@@ -34,17 +34,41 @@ type ${OBJ_NAME}sShowCmd struct {
 	} \`positional-args:"true" required:"true" positional-arg-name:"${OBJ_NAME}-ID"\`
 }
 
+func (c *${OBJ_NAME}sShowCmd) showCmdPostProcessFuncExists() bool {
+	return reflect.ValueOf(c).MethodByName("PostProcessShowCmd").Kind() != reflect.Invalid
+}
+
+func (c *${OBJ_NAME}sShowCmd) showCmdPostProcessFuncCall(bytes []byte) ([]byte, error) {
+	retVals := reflect.ValueOf(c).MethodByName("PostProcessShowCmd").Call([]reflect.Value{reflect.ValueOf(bytes)})
+
+	var err error
+
+	errVal := retVals[1].Interface()
+	if errVal != nil {
+		err = errVal.(error)
+	}
+
+	return retVals[0].Bytes(), err
+}
+
 func (c *${OBJ_NAME}sShowCmd) Execute(args []string) error {
 	bridge := cmd.getHue()
 
 	resp, err := bridge.${GET_OBJ_FUNC}(c.Arguments.ID)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		return err
 	}
 
 	bytes, err := yaml.Marshal(resp)
 	if err != nil {
 		return err
+	}
+
+	if c.showCmdPostProcessFuncExists() {
+		bytes, err = c.showCmdPostProcessFuncCall(bytes)
+		if err != nil {
+			return err
+		}
 	}
 
 	return yqlib.ColorizeAndPrint(bytes, os.Stdout)

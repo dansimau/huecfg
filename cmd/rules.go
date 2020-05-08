@@ -1,5 +1,9 @@
 package cmd
 
+import (
+	"gopkg.in/yaml.v3"
+)
+
 //go:generate ./gen_list.sh OBJS_NAME=rules OBJS_TYPE=[]hue.Rule GET_OBJ_FUNC=GetRules()
 //go:generate ./gen_show.sh OBJ_NAME=rule GET_OBJ_FUNC=GetRule
 
@@ -37,4 +41,26 @@ func init() {
 type rulesCmd struct {
 	RulesList *rulesListCmd `command:"list" alias:"ls" description:"List rules"`
 	RulesShow *rulesShowCmd `command:"show" description:"Display the specified rule"`
+}
+
+func (c *rulesShowCmd) PostProcessShowCmd(bytes []byte) ([]byte, error) {
+	var data yaml.Node
+	err := yaml.Unmarshal(bytes, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	rule := yamlMap(data.Content[0])
+
+	for _, action := range rule["actions"].Content {
+		actionMap := yamlMap(action)
+		annotateResourcePathWithYAMLComment(actionMap["address"])
+	}
+
+	for _, condition := range rule["conditions"].Content {
+		conditionMap := yamlMap(condition)
+		annotateResourcePathWithYAMLComment(conditionMap["address"])
+	}
+
+	return yaml.Marshal(&data)
 }

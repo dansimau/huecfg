@@ -2,7 +2,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"reflect"
 
@@ -38,7 +37,7 @@ func (c *groupsShowCmd) Execute(args []string) error {
 
 	resp, err := bridge.GetGroup(c.Arguments.ID)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		return err
 	}
 
 	bytes, err := yaml.Marshal(resp)
