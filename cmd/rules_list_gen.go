@@ -19,8 +19,9 @@ func rulesToGenericSlice(s []hue.Rule) []interface{} {
 }
 
 type rulesListCmd struct {
-	Fields string `long:"fields" description:"List of fields to include"`
-	Sort   string `long:"sort" description:"Field to sort by"`
+	Fields  string `long:"fields" description:"List of fields to include"`
+	Reverse bool   `long:"reverse" description:"Reverse sort order"`
+	Sort    string `long:"sort" description:"Field to sort by"`
 }
 
 func (c *rulesListCmd) Execute(args []string) error {
@@ -45,7 +46,7 @@ func (c *rulesListCmd) Execute(args []string) error {
 		sortField = strcase.ToCamel(rulesHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedrules, err := sortByField(rulesToGenericSlice(rules), sortField)
+	sortedrules, err := sortByField(rulesToGenericSlice(rules), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}

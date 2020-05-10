@@ -6,47 +6,38 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dansimau/huecfg/pkg/hue"
 	"github.com/iancoleman/strcase"
 )
 
-func sensorsToGenericSlice(s []hue.Sensor) []interface{} {
-	var res = make([]interface{}, len(s))
-	for i, obj := range s {
-		res[i] = obj
-	}
-	return res
-}
-
-type sensorsListCmd struct {
+type usersListCmd struct {
 	Fields  string `long:"fields" description:"List of fields to include"`
 	Reverse bool   `long:"reverse" description:"Reverse sort order"`
 	Sort    string `long:"sort" description:"Field to sort by"`
 }
 
-func (c *sensorsListCmd) Execute(args []string) error {
+func (c *usersListCmd) Execute(args []string) error {
 	bridge := cmd.getHue()
 
-	sensors, err := bridge.GetSensors()
+	users, err := bridge.GetConfig()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 		os.Exit(1)
 	}
 
-	fields := sensorsDefaultFields
+	fields := usersDefaultFields
 	if c.Fields != "" {
 		fields = []string{}
 		for _, fieldName := range strings.Split(c.Fields, ",") {
-			fields = append(fields, sensorsHeaderTransform.TransformInput(fieldName))
+			fields = append(fields, usersHeaderTransform.TransformInput(fieldName))
 		}
 	}
 
-	sortField := sensorsDefaultSortField
+	sortField := usersDefaultSortField
 	if c.Sort != "" {
-		sortField = strcase.ToCamel(sensorsHeaderTransform.TransformInput(c.Sort))
+		sortField = strcase.ToCamel(usersHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedsensors, err := sortByField(sensorsToGenericSlice(sensors), sortField, c.Reverse)
+	sortedusers, err := sortByField(configToUsersGenericSlice(users), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}
@@ -55,11 +46,11 @@ func (c *sensorsListCmd) Execute(args []string) error {
 
 	headerRow := []string{}
 	for _, fieldName := range fields {
-		headerRow = append(headerRow, sensorsHeaderTransform.TransformOutput(fieldName))
+		headerRow = append(headerRow, usersHeaderTransform.TransformOutput(fieldName))
 	}
 	rows = append(rows, headerRow)
 
-	for _, light := range sortedsensors {
+	for _, light := range sortedusers {
 		row := []string{}
 
 		for _, field := range fields {
@@ -68,7 +59,7 @@ func (c *sensorsListCmd) Execute(args []string) error {
 				return err
 			}
 
-			row = append(row, sensorsFieldTransform.TransformOutput(field, reflectValueToString(v)))
+			row = append(row, usersFieldTransform.TransformOutput(field, reflectValueToString(v)))
 		}
 
 		rows = append(rows, row)

@@ -10,8 +10,9 @@ import (
 )
 
 type freeListCmd struct {
-	Fields string `long:"fields" description:"List of fields to include"`
-	Sort   string `long:"sort" description:"Field to sort by"`
+	Fields  string `long:"fields" description:"List of fields to include"`
+	Reverse bool   `long:"reverse" description:"Reverse sort order"`
+	Sort    string `long:"sort" description:"Field to sort by"`
 }
 
 func (c *freeListCmd) Execute(args []string) error {
@@ -36,7 +37,7 @@ func (c *freeListCmd) Execute(args []string) error {
 		sortField = strcase.ToCamel(freeHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedfree, err := sortByField(capabilitiesToResourceUsageGenericSlice(free), sortField)
+	sortedfree, err := sortByField(capabilitiesToResourceUsageGenericSlice(free), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}

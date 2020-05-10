@@ -69,8 +69,8 @@ type Config struct {
 	SWVersion string
 	Timezone  string
 	Whitelist map[string]struct {
-		CreateDate  *AbsoluteTime
-		LastUseDate *AbsoluteTime
+		CreateDate  AbsoluteTime `json:"create date"`
+		LastUseDate AbsoluteTime `json:"last use date"`
 		Name        string
 	}
 	ZigbeeChannel int

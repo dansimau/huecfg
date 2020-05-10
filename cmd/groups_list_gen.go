@@ -19,8 +19,9 @@ func groupsToGenericSlice(s []hue.Group) []interface{} {
 }
 
 type groupsListCmd struct {
-	Fields string `long:"fields" description:"List of fields to include"`
-	Sort   string `long:"sort" description:"Field to sort by"`
+	Fields  string `long:"fields" description:"List of fields to include"`
+	Reverse bool   `long:"reverse" description:"Reverse sort order"`
+	Sort    string `long:"sort" description:"Field to sort by"`
 }
 
 func (c *groupsListCmd) Execute(args []string) error {
@@ -45,7 +46,7 @@ func (c *groupsListCmd) Execute(args []string) error {
 		sortField = strcase.ToCamel(groupsHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedgroups, err := sortByField(groupsToGenericSlice(groups), sortField)
+	sortedgroups, err := sortByField(groupsToGenericSlice(groups), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}

@@ -11,6 +11,7 @@ import (
 type apiConfigCmd struct {
 	CreateUser *apiConfigCreateUserCmd `command:"create-user" description:"Create user to interact with Hue Bridge"`
 	Get        *apiConfigGetCmd        `command:"get" description:"Show Hue Bridge configuration"`
+	Dump       *apiConfigDumpCmd       `command:"dump" description:"Fetch the full state of the device as a JSON document"`
 }
 
 // huecfg api config get ...
@@ -41,6 +42,23 @@ func (c *apiConfigCreateUserCmd) Execute(args []string) error {
 	bridge := cmd.getHueAPI()
 
 	respBytes, err := bridge.CreateUser(c.DeviceType, c.GenerateClientKey)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
+	}
+
+	if err := jsonutil.PrintBytes(respBytes); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type apiConfigDumpCmd struct{}
+
+func (c *apiConfigDumpCmd) Execute(args []string) error {
+	bridge := cmd.getHueAPI()
+
+	respBytes, err := bridge.GetFullState()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
 	}

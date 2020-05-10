@@ -27,7 +27,7 @@ TODO
 * ❌ = no plans to support
 * - = not applicable
 
-| API               | List | Show | Search | Create | Set |
+| API               | List | Get  | Search | Create | Set |
 |-------------------|------|------|--------|--------|-----|
 | Lights            |  ✅  |  ✅  |   🚧   |   -    |  🚧 |
 | Groups            |  ✅  |  ✅  |   -    |   🚧   |  🚧 |
@@ -35,9 +35,7 @@ TODO
 | Scenes            |  ✅  |  ✅  |   -    |   🚧   |  🚧 |
 | Sensors           |  ✅  |  ✅  |   🚧   |   -    |  🚧 |
 | Rules             |  ✅  |  ✅  |   -    |   🚧   |  🚧 |
-| Configuration     |  ✅¹ |  -   |   -    |   -    |  🚧 |
+| Configuration     |  ✅  |  ✅  |   -    |   -    |  🚧 |
 | Info (deprecated) |  ❌  |  ❌  |   ❌   |   ❌   |  ❌ |
 | Resource links    |  ✅  |  ✅  |   -    |   🚧   |  🚧 |
-| Capabilities      |  ✅  |  -   |   -    |   -    |  -  |
-
-¹ "Get full state" not implemented
+| Capabilities      |  ✅  |  ✅  |   -    |   -    |  -  |

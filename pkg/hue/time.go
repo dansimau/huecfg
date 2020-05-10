@@ -6,7 +6,10 @@ import (
 	"time"
 )
 
-const absoluteTimeFormat = "2006-01-02T15:04:05"
+const (
+	absoluteTimeFormat              = "2006-01-02T15:04:05"
+	absoluteTimeHumanReadableFormat = "2006-01-02 15:04:05"
+)
 
 // AbsoluteTime is a custom time struct that supports JSON marshalling from
 // the Hue Bridge format.
@@ -18,7 +21,7 @@ func (t AbsoluteTime) String() string {
 	if t.Time.IsZero() {
 		return ""
 	}
-	return t.Time.String()
+	return t.Time.Format(absoluteTimeHumanReadableFormat)
 }
 
 func (t *AbsoluteTime) UnmarshalJSON(b []byte) (err error) {

@@ -19,8 +19,9 @@ func scenesToGenericSlice(s []hue.Scene) []interface{} {
 }
 
 type scenesListCmd struct {
-	Fields string `long:"fields" description:"List of fields to include"`
-	Sort   string `long:"sort" description:"Field to sort by"`
+	Fields  string `long:"fields" description:"List of fields to include"`
+	Reverse bool   `long:"reverse" description:"Reverse sort order"`
+	Sort    string `long:"sort" description:"Field to sort by"`
 }
 
 func (c *scenesListCmd) Execute(args []string) error {
@@ -45,7 +46,7 @@ func (c *scenesListCmd) Execute(args []string) error {
 		sortField = strcase.ToCamel(scenesHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedscenes, err := sortByField(scenesToGenericSlice(scenes), sortField)
+	sortedscenes, err := sortByField(scenesToGenericSlice(scenes), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}

@@ -19,8 +19,9 @@ func lightsToGenericSlice(s []hue.Light) []interface{} {
 }
 
 type lightsListCmd struct {
-	Fields string `long:"fields" description:"List of fields to include"`
-	Sort   string `long:"sort" description:"Field to sort by"`
+	Fields  string `long:"fields" description:"List of fields to include"`
+	Reverse bool   `long:"reverse" description:"Reverse sort order"`
+	Sort    string `long:"sort" description:"Field to sort by"`
 }
 
 func (c *lightsListCmd) Execute(args []string) error {
@@ -45,7 +46,7 @@ func (c *lightsListCmd) Execute(args []string) error {
 		sortField = strcase.ToCamel(lightsHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedlights, err := sortByField(lightsToGenericSlice(lights), sortField)
+	sortedlights, err := sortByField(lightsToGenericSlice(lights), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}

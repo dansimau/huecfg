@@ -51,8 +51,9 @@ import (
 $(include_transform_func)
 
 type ${OBJS_NAME}ListCmd struct {
-	Fields string \`long:"fields" description:"List of fields to include"\`
-	Sort   string \`long:"sort" description:"Field to sort by"\`
+	Fields  string \`long:"fields" description:"List of fields to include"\`
+	Reverse bool   \`long:"reverse" description:"Reverse sort order"\`
+	Sort    string \`long:"sort" description:"Field to sort by"\`
 }
 
 func (c *${OBJS_NAME}ListCmd) Execute(args []string) error {
@@ -77,7 +78,7 @@ func (c *${OBJS_NAME}ListCmd) Execute(args []string) error {
 		sortField = strcase.ToCamel(${OBJS_NAME}HeaderTransform.TransformInput(c.Sort))
 	}
 
-	sorted${OBJS_NAME}, err := sortByField(${OBJ_TRANSFORM_FUNC}(${OBJS_NAME}), sortField)
+	sorted${OBJS_NAME}, err := sortByField(${OBJ_TRANSFORM_FUNC}(${OBJS_NAME}), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}

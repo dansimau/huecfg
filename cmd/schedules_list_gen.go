@@ -19,8 +19,9 @@ func schedulesToGenericSlice(s []hue.Schedule) []interface{} {
 }
 
 type schedulesListCmd struct {
-	Fields string `long:"fields" description:"List of fields to include"`
-	Sort   string `long:"sort" description:"Field to sort by"`
+	Fields  string `long:"fields" description:"List of fields to include"`
+	Reverse bool   `long:"reverse" description:"Reverse sort order"`
+	Sort    string `long:"sort" description:"Field to sort by"`
 }
 
 func (c *schedulesListCmd) Execute(args []string) error {
@@ -45,7 +46,7 @@ func (c *schedulesListCmd) Execute(args []string) error {
 		sortField = strcase.ToCamel(schedulesHeaderTransform.TransformInput(c.Sort))
 	}
 
-	sortedschedules, err := sortByField(schedulesToGenericSlice(schedules), sortField)
+	sortedschedules, err := sortByField(schedulesToGenericSlice(schedules), sortField, c.Reverse)
 	if err != nil {
 		return err
 	}

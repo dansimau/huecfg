@@ -49,3 +49,17 @@ func (api *API) GetConfig() ([]byte, error) {
 
 	return ioutil.ReadAll(resp.Body)
 }
+
+// GetFullState is used to fetch the entire datastore from the device,
+// including settings and state information for lights, groups, schedules and
+// configuration. It should only be used sparingly as it is resource intensive
+// for the bridge, but is supplied e.g. for synchronization purposes.
+func (api *API) GetFullState() ([]byte, error) {
+	resp, err := api.httpGet(fmt.Sprintf("/api/%s", api.username()))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}

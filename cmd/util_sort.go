@@ -19,7 +19,7 @@ type sortableGeneric struct {
 // NewSortableGeneric returns a sortableGeneric or an error if we don't know
 // how to sort by the type of v.
 func newSortableGeneric(sortKey reflect.Value, v interface{}) (sortableGeneric, error) {
-	if sortKey.Kind() != reflect.Int && sortKey.Kind() != reflect.String {
+	if sortKey.Kind() != reflect.Int && sortKey.Kind() != reflect.String && reflectValueToStringer(sortKey) == nil {
 		return sortableGeneric{}, fmt.Errorf("cannot sort by unknown field type: %v", sortKey.Kind())
 	}
 	return sortableGeneric{sortKey, v}, nil
@@ -37,14 +37,20 @@ func (s sortableGenericSlice) Less(i, j int) bool {
 	case reflect.Int:
 		return s[i].sortKey.Int() < s[j].sortKey.Int()
 	case reflect.String:
-		// If strings can be compared as ints, do that first. This is to handle
-		// the fact that all Hue Bridge IDs are generally numbers. We want the
-		// sort to treat them as if they are real integers.
-		if res, err := cmpStrInt(s[i].sortKey.String(), s[j].sortKey.String()); err == nil {
-			return res
+		return cmpStr(s[i].sortKey.String(), s[j].sortKey.String())
+	case reflect.Struct:
+		s1 := reflectValueToStringer(s[i].sortKey)
+		if s1 == nil {
+			return false
 		}
-		return s[i].sortKey.String() < s[j].sortKey.String()
+		s2 := reflectValueToStringer(s[j].sortKey)
+		if s2 == nil {
+			return false
+		}
+
+		return cmpStr(s1.String(), s2.String())
 	}
+
 	return false
 }
 
@@ -58,7 +64,7 @@ func (s sortableGenericSlice) Values() []interface{} {
 	return res
 }
 
-func sortByField(s []interface{}, path string) ([]interface{}, error) {
+func sortByField(s []interface{}, path string, reverse bool) ([]interface{}, error) {
 	// Lookup sort key from each obj field
 	res := sortableGenericSlice{}
 	for _, v := range s {
@@ -75,9 +81,23 @@ func sortByField(s []interface{}, path string) ([]interface{}, error) {
 		res = append(res, g)
 	}
 
-	sort.Sort(res)
+	if reverse {
+		sort.Sort(sort.Reverse(res))
+	} else {
+		sort.Sort(res)
+	}
 
 	return res.Values(), nil
+}
+
+func cmpStr(i, j string) bool {
+	// If strings can be compared as ints, do that first. This is to handle
+	// the fact that all Hue Bridge IDs are generally numbers. We want the
+	// sort to treat them as if they are real integers.
+	if res, err := cmpStrInt(i, j); err == nil {
+		return res
+	}
+	return i < j
 }
 
 func cmpStrInt(i, j string) (bool, error) {
@@ -91,4 +111,17 @@ func cmpStrInt(i, j string) (bool, error) {
 	}
 
 	return intI < intJ, nil
+}
+
+func reflectValueToStringer(v reflect.Value) fmt.Stringer {
+	if !v.CanInterface() {
+		return nil
+	}
+
+	stringer, ok := v.Interface().(fmt.Stringer)
+	if !ok {
+		return nil
+	}
+
+	return stringer
 }
