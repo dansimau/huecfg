@@ -32,6 +32,10 @@ func (h *Hue) GetSensors() ([]Sensor, error) {
 		return nil, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return nil, hueErr
+	}
+
 	var objs map[string]Sensor
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
@@ -51,6 +55,10 @@ func (h *Hue) GetSensor(id string) (Sensor, error) {
 	respBytes, err := h.API.GetSensor(id)
 	if err != nil {
 		return Sensor{}, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Sensor{}, hueErr
 	}
 
 	var obj Sensor

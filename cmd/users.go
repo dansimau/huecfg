@@ -19,10 +19,14 @@ var (
 )
 
 func init() {
-	_, err := parser.AddCommand("users", "Manage users (API keys)", "", &usersListCmd{})
+	_, err := parser.AddCommand("users", "Manage users (API keys)", "", &usersCmd{})
 	if err != nil {
 		panic(err)
 	}
+}
+
+type usersCmd struct {
+	UsersList *usersListCmd `command:"list" alias:"ls" description:"List users/API keys"`
 }
 
 type user struct {

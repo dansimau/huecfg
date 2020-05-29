@@ -44,6 +44,10 @@ func (h *Hue) GetCapabilities() (Capabilities, error) {
 		return Capabilities{}, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Capabilities{}, hueErr
+	}
+
 	var obj Capabilities
 	if err := json.Unmarshal(respBytes, &obj); err != nil {
 		return Capabilities{}, err

@@ -96,6 +96,20 @@ func (api *API) httpPost(path string, body io.Reader) (*http.Response, error) {
 	return api.httpDo(req)
 }
 
+func (api *API) httpDelete(path string) (*http.Response, error) {
+	url, err := api.url(path)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return api.httpDo(req)
+}
+
 func (api *API) username() string {
 	if api.Username == "" {
 		return "nobody"

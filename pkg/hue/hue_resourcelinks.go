@@ -48,6 +48,10 @@ func (h *Hue) GetResourceLinks() ([]ResourceLink, error) {
 		return nil, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return nil, hueErr
+	}
+
 	var objs map[string]ResourceLink
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
@@ -66,6 +70,10 @@ func (h *Hue) GetResourceLink(id string) (ResourceLink, error) {
 	respBytes, err := h.API.GetResourceLink(id)
 	if err != nil {
 		return ResourceLink{}, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return ResourceLink{}, hueErr
 	}
 
 	var obj ResourceLink

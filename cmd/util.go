@@ -124,6 +124,32 @@ func reflectValueToString(v reflect.Value) string {
 	}
 }
 
+func mustStrToBool(s string) bool {
+	switch strings.ToLower(s) {
+	case "true", "yes", "1":
+		return true
+	case "false", "no", "0":
+		return false
+	}
+	panic(fmt.Sprintf("cannot convert \"%s\" to bool", s))
+}
+
+func boolToOnOff(b bool) string {
+	if b {
+		return "On"
+	} else {
+		return "Off"
+	}
+}
+
+func boolToYesNo(b bool) string {
+	if b {
+		return "Yes"
+	} else {
+		return "No"
+	}
+}
+
 // yamlMap takes a yaml.Node that is a map and returns a Go map with the values
 // of type yaml.Node.
 func yamlMap(node *yaml.Node) map[string]*yaml.Node {

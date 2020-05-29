@@ -63,11 +63,40 @@ type Light struct {
 	}
 }
 
+// DeleteLight deletes a light from the bridge.
+func (h *Hue) DeleteLight(id string) (Success, error) {
+	respBytes, err := h.API.DeleteLight(id)
+	if err != nil {
+		return Success{}, err
+	}
+
+	var statusMsg Status
+	if err := json.Unmarshal(respBytes, &statusMsg); err != nil {
+		return Success{}, err
+	}
+
+	successMsg, err := statusMsg.ToSuccess()
+	if err != nil {
+		return Success{}, err
+	}
+
+	errorMsg, err := statusMsg.ToError()
+	if err != nil {
+		return Success{}, err
+	}
+
+	return *successMsg, errorMsg
+}
+
 // GetLights gets a list of all lights that have been discovered by the bridge.
 func (h *Hue) GetLights() ([]Light, error) {
 	respBytes, err := h.API.GetLights()
 	if err != nil {
 		return nil, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return nil, hueErr
 	}
 
 	var objs map[string]Light
@@ -91,6 +120,10 @@ func (h *Hue) GetLight(id string) (Light, error) {
 		return Light{}, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Light{}, hueErr
+	}
+
 	var obj Light
 	if err := json.Unmarshal(respBytes, &obj); err != nil {
 		return Light{}, err
@@ -99,4 +132,23 @@ func (h *Hue) GetLight(id string) (Light, error) {
 	obj.ID = id
 
 	return obj, nil
+}
+
+// SearchForNewLights gets light attributes and state.
+func (h *Hue) SearchForNewLights(deviceIds ...string) (SuccessMessages, error) {
+	respBytes, err := h.API.SearchForNewLights(deviceIds...)
+	if err != nil {
+		return nil, err
+	}
+
+	var statusMsgs StatusResponse
+	if err := json.Unmarshal(respBytes, &statusMsgs); err != nil {
+		return nil, err
+	}
+
+	if errs := statusMsgs.Errors(); errs != nil {
+		return nil, errs
+	}
+
+	return statusMsgs.SuccessMessages(), nil
 }

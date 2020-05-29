@@ -92,6 +92,10 @@ func (h *Hue) CreateUser(deviceType string, generateClientKey bool) (CreateUserR
 		return CreateUserResponse{}, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return CreateUserResponse{}, hueErr
+	}
+
 	var obj CreateUserResponse
 	if err := json.Unmarshal(respBytes, &obj); err != nil {
 		return CreateUserResponse{}, err
@@ -106,6 +110,10 @@ func (h *Hue) GetConfig() (Config, error) {
 	respBytes, err := h.API.GetConfig()
 	if err != nil {
 		return Config{}, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Config{}, hueErr
 	}
 
 	var obj Config

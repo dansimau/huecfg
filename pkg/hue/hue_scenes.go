@@ -71,6 +71,10 @@ func (h *Hue) GetScenes() ([]Scene, error) {
 		return nil, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return nil, hueErr
+	}
+
 	var res = []Scene{}
 	for ID, obj := range objs {
 		obj.ID = ID
@@ -84,6 +88,10 @@ func (h *Hue) GetScene(ID string) (Scene, error) {
 	respBytes, err := h.API.GetScene(ID)
 	if err != nil {
 		return Scene{}, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Scene{}, hueErr
 	}
 
 	var obj Scene

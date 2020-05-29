@@ -27,6 +27,10 @@ func (h *Hue) GetSchedules() ([]Schedule, error) {
 		return nil, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return nil, hueErr
+	}
+
 	var objs map[string]Schedule
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
@@ -45,6 +49,10 @@ func (h *Hue) GetSchedule(id string) (Schedule, error) {
 	respBytes, err := h.API.GetSchedule(id)
 	if err != nil {
 		return Schedule{}, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Schedule{}, hueErr
 	}
 
 	var obj Schedule

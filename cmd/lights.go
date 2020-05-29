@@ -8,22 +8,23 @@ var lightsDefaultFields = []string{
 	"Name",
 	"Type",
 	"ManufacturerName",
+	"State.Reachable",
 	"State.On",
 }
 
 const lightsDefaultSortField = "ID"
 
 var lightsHeaderTransform = newHeaderTransform(map[string]string{
-	"State.On": "State",
+	"State.On":        "State",
+	"State.Reachable": "Reachable",
 })
 
 var lightsFieldTransform = newFieldTransform(map[string]fieldTransformFunc{
 	"State.On": func(v string) string {
-		r := "Off"
-		if v == "true" {
-			r = "On"
-		}
-		return r
+		return boolToOnOff(mustStrToBool(v))
+	},
+	"State.Reachable": func(v string) string {
+		return boolToYesNo(mustStrToBool(v))
 	},
 })
 

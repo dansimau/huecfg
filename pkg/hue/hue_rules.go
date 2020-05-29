@@ -37,6 +37,10 @@ func (h *Hue) GetRules() ([]Rule, error) {
 		return nil, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return nil, hueErr
+	}
+
 	var objs map[string]Rule
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
@@ -56,6 +60,10 @@ func (h *Hue) GetRule(id string) (Rule, error) {
 	respBytes, err := h.API.GetRule(id)
 	if err != nil {
 		return Rule{}, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Rule{}, hueErr
 	}
 
 	var obj Rule

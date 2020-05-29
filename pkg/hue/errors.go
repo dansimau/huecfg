@@ -1,19 +1,27 @@
 package hue
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
 
 var (
 	errEmptyID = errors.New("ID cannot be empty")
 )
 
-// Error represents an error from the Hue Bridge API
-type Error struct {
-	Address     string
-	Description string
-	Type        int
+type MultiError []error
+
+func (m MultiError) errorStrings() (errStrings []string) {
+	for _, e := range m {
+		errStrings = append(errStrings, e.Error())
+	}
+	return errStrings
 }
 
-// Error is the description of the error return from the Hue Bridge API.
-func (e *Error) Error() string {
-	return e.Description
+func (m MultiError) Error() string {
+	if len(m) > 1 {
+		return fmt.Sprintf("* %s", strings.Join(m.errorStrings(), "\n* "))
+	}
+	return m[0].Error()
 }

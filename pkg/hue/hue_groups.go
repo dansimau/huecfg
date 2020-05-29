@@ -30,6 +30,10 @@ func (h *Hue) GetGroups() ([]Group, error) {
 		return nil, err
 	}
 
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return nil, hueErr
+	}
+
 	var objs map[string]Group
 	if err := json.Unmarshal(respBytes, &objs); err != nil {
 		return nil, err
@@ -48,6 +52,10 @@ func (h *Hue) GetGroup(id string) (Group, error) {
 	respBytes, err := h.API.GetGroup(id)
 	if err != nil {
 		return Group{}, err
+	}
+
+	if hueErr := parseAsHueError(respBytes); hueErr != nil {
+		return Group{}, hueErr
 	}
 
 	var obj Group
