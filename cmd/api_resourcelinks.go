@@ -1,53 +1,25 @@
 package cmd
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/dansimau/huecfg/pkg/jsonutil"
-)
-
 // huecfg api resourcelinks ...
 type apiResourceLinksCmd struct {
-	All *apiResourceLinksAllCmd `command:"all" description:"Gets a list of all resourcelinks that are in the bridge."`
-	Get *apiResourceLinksGetCmd `command:"get" description:"Returns resourcelink object with the specified ID."`
+	Create *apiResourceLinksCreateCmd `command:"create" description:"Create a new resourcelink"`
+	Get    *apiResourceLinksGetCmd    `command:"get" description:"Fetch the specified resourcelink by ID"`
+	GetAll *apiResourceLinksGetAllCmd `command:"get-all" description:"Fetch all resourcelinks at once"`
 }
 
-type apiResourceLinksAllCmd struct{}
-
-func (c *apiResourceLinksAllCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetResourceLinks()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
+// huecfg api resourcelink create
+//go:generate ./gen_api_write.sh ID=resourcelinks_create TYPE=apiResourceLinksCreateCmd DATA=c.Data FUNC_CALL=bridge.CreateResourceLink(data)
+type apiResourceLinksCreateCmd struct {
+	Data string `long:"data" description:"JSON data to send" default:"-"`
 }
+
+//go:generate ./gen_api_read.sh ID=resourcelinks_get_all TYPE=apiResourceLinksGetAllCmd FUNC_CALL=bridge.GetResourceLinks()
+type apiResourceLinksGetAllCmd struct{}
 
 // huecfg api resourcelinks get ...
+//go:generate ./gen_api_read.sh ID=resourcelinks_get TYPE=apiResourceLinksGetCmd FUNC_CALL=bridge.GetResourceLink(c.Arguments.ID)
 type apiResourceLinksGetCmd struct {
 	Arguments struct {
 		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"resourcelink-ID"`
-}
-
-func (c *apiResourceLinksGetCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetResourceLink(c.Arguments.ID)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
 }

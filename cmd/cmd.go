@@ -23,7 +23,7 @@ type Cmd struct {
 
 var (
 	cmd    = &Cmd{}
-	parser = flags.NewParser(cmd, flags.HelpFlag)
+	parser = flags.NewParser(cmd, flags.HelpFlag+flags.IgnoreUnknown)
 )
 
 // Run executes the program with the specified arguments and returns the code
@@ -35,13 +35,19 @@ func Run(args []string) (exitCode int) {
 	}
 
 	if expandedConfigFilePath != "" {
-		if err := flags.IniParse(expandedConfigFilePath, cmd); err != nil {
+		if err := flags.IniParse(expandedConfigFilePath, cmd); err != nil && !os.IsNotExist(err) {
 			fmt.Fprintln(os.Stderr, err)
 		}
 	}
 
 	_, err := parser.ParseArgs(args)
 	if err != nil {
+		// Handle --help, which is represented as an error by the flags package
+		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
+			fmt.Fprintf(os.Stderr, "%s\n", err)
+			return 0
+		}
+
 		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
 		return 1
 	}

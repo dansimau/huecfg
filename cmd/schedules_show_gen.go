@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"bytes"
+	"io"
 	"os"
 	"reflect"
 
@@ -11,7 +13,7 @@ import (
 
 type schedulesShowCmd struct {
 	Arguments struct {
-		ID string
+		IDs []string
 	} `positional-args:"true" required:"true" positional-arg-name:"schedule-ID"`
 }
 
@@ -33,24 +35,46 @@ func (c *schedulesShowCmd) showCmdPostProcessFuncCall(bytes []byte) ([]byte, err
 }
 
 func (c *schedulesShowCmd) Execute(args []string) error {
+	if err := errorOnUnknownArgs(args); err != nil {
+		return err
+	}
+
 	bridge := cmd.getHue()
 
-	resp, err := bridge.GetSchedule(c.Arguments.ID)
-	if err != nil {
-		return err
-	}
+	outputBytes := &bytes.Buffer{}
 
-	bytes, err := yaml.Marshal(resp)
-	if err != nil {
-		return err
-	}
-
-	if c.showCmdPostProcessFuncExists() {
-		bytes, err = c.showCmdPostProcessFuncCall(bytes)
+	for _, id := range c.Arguments.IDs {
+		resp, err := bridge.GetSchedule(id)
 		if err != nil {
+			return err
+		}
+
+		bytes, err := yaml.Marshal(resp)
+		if err != nil {
+			return err
+		}
+
+		if c.showCmdPostProcessFuncExists() {
+			bytes, err = c.showCmdPostProcessFuncCall(bytes)
+			if err != nil {
+				return err
+			}
+		}
+
+		if len(c.Arguments.IDs) > 1 {
+			if _, err := outputBytes.Write([]byte("---\n")); err != nil {
+				return err
+			}
+		}
+
+		if err := yqlib.ColorizeAndPrint(bytes, outputBytes); err != nil {
 			return err
 		}
 	}
 
-	return yqlib.ColorizeAndPrint(bytes, os.Stdout)
+	if _, err := io.Copy(os.Stdout, outputBytes); err != nil {
+		return err
+	}
+
+	return nil
 }

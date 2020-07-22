@@ -1,6 +1,7 @@
 package hue
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -16,7 +17,17 @@ type API struct {
 	Host     string
 	Username string
 
-	Debug bool
+	Client *http.Client
+	Debug  bool
+
+	ctx context.Context
+}
+
+func (api *API) context() context.Context {
+	if api.ctx == nil {
+		return context.Background()
+	}
+	return api.ctx
 }
 
 func (api *API) debugReq(req *http.Request) {
@@ -61,8 +72,13 @@ func (api *API) debugResp(resp *http.Response) {
 }
 
 func (api *API) httpDo(req *http.Request) (*http.Response, error) {
+	client := api.Client
+	if client == nil {
+		client = http.DefaultClient
+	}
+
 	api.debugReq(req)
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	api.debugResp(resp)
 	return resp, err
 }
@@ -73,7 +89,7 @@ func (api *API) httpGet(path string) (*http.Response, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequestWithContext(api.context(), "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +102,23 @@ func (api *API) httpPost(path string, body io.Reader) (*http.Response, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", url, body)
+	req, err := http.NewRequestWithContext(api.context(), "POST", url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+
+	return api.httpDo(req)
+}
+
+func (api *API) httpPut(path string, body io.Reader) (*http.Response, error) {
+	url, err := api.url(path)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequestWithContext(api.context(), "PUT", url, body)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +134,7 @@ func (api *API) httpDelete(path string) (*http.Response, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("DELETE", url, nil)
+	req, err := http.NewRequestWithContext(api.context(), "DELETE", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -127,4 +159,11 @@ func (api *API) url(path string) (url string, err error) {
 	urlParts = append(urlParts, api.Host, path)
 
 	return strings.Join(urlParts, ""), nil
+}
+
+func (api *API) WithContext(ctx context.Context) *API {
+	newAPI := new(API)
+	*newAPI = *api
+	newAPI.ctx = ctx
+	return newAPI
 }

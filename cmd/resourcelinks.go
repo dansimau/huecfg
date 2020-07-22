@@ -42,5 +42,8 @@ func (c *resourcelinksShowCmd) PostProcessShowCmd(bytes []byte) ([]byte, error) 
 		annotateResourcePathWithYAMLComment(resourcePath)
 	}
 
+	// Annotate owner field
+	annotateUsername(resourcelink["owner"])
+
 	return yaml.Marshal(&data)
 }

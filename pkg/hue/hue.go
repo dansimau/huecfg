@@ -105,7 +105,7 @@ func (s StatusResponse) SuccessMessages() (successes SuccessMessages) {
 	return successes
 }
 
-// Errors returns a MultiError, which is a slide of all errors in the status
+// Errors returns a MultiError, which is a slice of all errors in the status
 // response. If there are no errors, the MultiError slice will be nil.
 func (s StatusResponse) Errors() (errs MultiError) {
 	for _, status := range s {

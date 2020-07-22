@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -16,12 +14,15 @@ type usersListCmd struct {
 }
 
 func (c *usersListCmd) Execute(args []string) error {
+	if err := errorOnUnknownArgs(args); err != nil {
+		return err
+	}
+
 	bridge := cmd.getHue()
 
 	users, err := bridge.GetConfig()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
 	fields := usersDefaultFields

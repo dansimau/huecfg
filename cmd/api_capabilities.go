@@ -1,23 +1,5 @@
 package cmd
 
-import (
-	"github.com/dansimau/huecfg/pkg/jsonutil"
-)
-
 // huecfg api capabilities
+//go:generate ./gen_api_read.sh ID=capabilities_get TYPE=apiCapabilitiesCmd FUNC_CALL=bridge.GetCapabilities()
 type apiCapabilitiesCmd struct{}
-
-func (c *apiCapabilitiesCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetCapabilities()
-	if err != nil {
-		return err
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
-}

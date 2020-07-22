@@ -2,8 +2,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
 	"strings"
 
 	"github.com/dansimau/huecfg/pkg/hue"
@@ -25,12 +23,15 @@ type sensorsListCmd struct {
 }
 
 func (c *sensorsListCmd) Execute(args []string) error {
+	if err := errorOnUnknownArgs(args); err != nil {
+		return err
+	}
+
 	bridge := cmd.getHue()
 
 	sensors, err := bridge.GetSensors()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
 	fields := sensorsDefaultFields

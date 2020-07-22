@@ -63,6 +63,16 @@ type Light struct {
 	}
 }
 
+type SetLightAttributeParams struct {
+	Name *string `json:"name,omitempty"`
+}
+
+type SetLightStateParams struct {
+	On             *bool `json:"on,omitempty"`
+	Bri            *int  `json:"bri,omitempty"`
+	TransitionTime *int  `json:"transitiontime,omitempty"`
+}
+
 // DeleteLight deletes a light from the bridge.
 func (h *Hue) DeleteLight(id string) (Success, error) {
 	respBytes, err := h.API.DeleteLight(id)
@@ -151,4 +161,40 @@ func (h *Hue) SearchForNewLights(deviceIds ...string) (SuccessMessages, error) {
 	}
 
 	return statusMsgs.SuccessMessages(), nil
+}
+
+func (h *Hue) SetLightAttributes(id string, attrs SetLightAttributeParams) (StatusResponse, error) {
+	respBytes, err := h.API.SetLightAttributes(id, attrs)
+	if err != nil {
+		return nil, err
+	}
+
+	var statusMsgs StatusResponse
+	if err := json.Unmarshal(respBytes, &statusMsgs); err != nil {
+		return nil, err
+	}
+
+	if errs := statusMsgs.Errors(); errs != nil {
+		return nil, errs
+	}
+
+	return statusMsgs, nil
+}
+
+func (h *Hue) SetLightState(id string, state SetLightStateParams) (StatusResponse, error) {
+	respBytes, err := h.API.SetLightState(id, state)
+	if err != nil {
+		return nil, err
+	}
+
+	var statusMsgs StatusResponse
+	if err := json.Unmarshal(respBytes, &statusMsgs); err != nil {
+		return nil, err
+	}
+
+	if errs := statusMsgs.Errors(); errs != nil {
+		return nil, errs
+	}
+
+	return statusMsgs, nil
 }

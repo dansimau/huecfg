@@ -1,53 +1,18 @@
 package cmd
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/dansimau/huecfg/pkg/jsonutil"
-)
-
 // huecfg api sensors ...
 type apiSensorsCmd struct {
-	All *apiSensorsAllCmd `command:"all" description:"Gets a list of all sensors that have been added to the bridge."`
-	Get *apiSensorsGetCmd `command:"get" description:"Gets the sensor from the bridge with the given ID."`
+	Get    *apiSensorsGetCmd    `command:"get" description:"Fetch the specified sensor by ID"`
+	GetAll *apiSensorsGetAllCmd `command:"get-all" description:"Fetch all sensors at once"`
 }
 
-type apiSensorsAllCmd struct{}
-
-func (c *apiSensorsAllCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetSensors()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
-}
+//go:generate ./gen_api_read.sh ID=sensors_get_all TYPE=apiSensorsGetAllCmd FUNC_CALL=bridge.GetSensors()
+type apiSensorsGetAllCmd struct{}
 
 // huecfg api sensors get ...
+//go:generate ./gen_api_read.sh ID=sensors_get TYPE=apiSensorsGetCmd FUNC_CALL=bridge.GetSensor(c.Arguments.ID)
 type apiSensorsGetCmd struct {
 	Arguments struct {
 		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"sensor-ID"`
-}
-
-func (c *apiSensorsGetCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetSensor(c.Arguments.ID)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
 }

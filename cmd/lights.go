@@ -36,6 +36,8 @@ func init() {
 }
 
 type lightsCmd struct {
-	LightsList *lightsListCmd `command:"list" alias:"ls" description:"List lights"`
-	LightsShow *lightsShowCmd `command:"show" description:"Gets the attributes and state of a given light"`
+	LightsList     *lightsListCmd     `command:"list" alias:"ls" description:"List lights"`
+	LightsSetAttr  *lightsSetAttrCmd  `command:"set-attr" description:"Set attributes of a light"`
+	LightsSetState *lightsSetStateCmd `command:"set-state" description:"Set state of a light"`
+	LightsShow     *lightsShowCmd     `command:"show" description:"Gets the attributes and state of a given light"`
 }

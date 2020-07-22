@@ -1,54 +1,39 @@
 package cmd
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/dansimau/huecfg/pkg/jsonutil"
-)
-
 // huecfg api groups ...
 type apiGroupsCmd struct {
-	All *apiGroupsAllCmd `command:"all" description:"Gets a list of all groups that have been added to the bridge."`
-	//Create *apiGroupsCreateCmd `command:"create" description:"Creates a new group containing the lights specified and optional name."`
-	Get *apiGroupsGetCmd `command:"get" description:"Gets the group attributes for a given group."`
+	Get      *apiGroupsGetCmd      `command:"get" description:"Fetch the specified group by ID"`
+	GetAll   *apiGroupsGetAllCmd   `command:"get-all" description:"Fetch all group data at once"`
+	Set      *apiGroupsSetCmd      `command:"set" description:"Set attributes of a group"`
+	SetState *apiGroupsSetStateCmd `command:"set-state" description:"Set the state of all lights in a group"`
 }
 
-type apiGroupsAllCmd struct{}
+// huecfg api groups get-all
+//go:generate ./gen_api_read.sh ID=groups_get_all TYPE=apiGroupsGetAllCmd FUNC_CALL=bridge.GetGroups()
+type apiGroupsGetAllCmd struct{}
 
-func (c *apiGroupsAllCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetGroups()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// huecfg api groups get ...
+// huecfg api groups get
+//go:generate ./gen_api_read.sh ID=groups_get TYPE=apiGroupsGetCmd FUNC_CALL=bridge.GetGroup(c.Arguments.ID)
 type apiGroupsGetCmd struct {
 	Arguments struct {
 		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"group-ID"`
 }
 
-func (c *apiGroupsGetCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
+// huecfg api groups set
+//go:generate ./gen_api_write.sh ID=groups_set TYPE=apiGroupsSetCmd "FUNC_CALL=bridge.SetGroupAttributes(c.Arguments.ID, data)" DATA=c.Data
+type apiGroupsSetCmd struct {
+	Data      string `long:"data" description:"JSON data to send"`
+	Arguments struct {
+		ID string `description:"ID of the group to set attributes for."`
+	} `positional-args:"true" required:"true" positional-arg-name:"light-ID"`
+}
 
-	respBytes, err := bridge.GetGroup(c.Arguments.ID)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
+// huecfg api groups set-state ...
+//go:generate ./gen_api_write.sh ID=groups_set_state TYPE=apiGroupsSetStateCmd "FUNC_CALL=bridge.SetGroupState(c.Arguments.ID, data)" DATA=c.Data
+type apiGroupsSetStateCmd struct {
+	Data      string `long:"data" description:"JSON data to send" default:"-"`
+	Arguments struct {
+		ID string `description:"ID of the light to set state for."`
+	} `positional-args:"true" required:"true" positional-arg-name:"light-ID"`
 }

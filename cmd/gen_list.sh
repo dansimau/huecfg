@@ -57,12 +57,15 @@ type ${OBJS_NAME}ListCmd struct {
 }
 
 func (c *${OBJS_NAME}ListCmd) Execute(args []string) error {
+	if err := errorOnUnknownArgs(args); err != nil {
+		return err
+	}
+
 	bridge := cmd.getHue()
 
 	${OBJS_NAME}, err := bridge.${GET_OBJ_FUNC}
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 
 	fields := ${OBJS_NAME}DefaultFields

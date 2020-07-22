@@ -25,6 +25,10 @@ type Sensor struct {
 	State map[string]interface{}
 }
 
+type SetSensorAttributeParams struct {
+	Name *string `json:"name,omitempty"`
+}
+
 // GetSensors gets a list of all sensors that have been added to the bridge.
 func (h *Hue) GetSensors() ([]Sensor, error) {
 	respBytes, err := h.API.GetSensors()
@@ -69,4 +73,40 @@ func (h *Hue) GetSensor(id string) (Sensor, error) {
 	obj.ID = id
 
 	return obj, nil
+}
+
+func (h *Hue) SetSensorAttributes(id string, attrs SetSensorAttributeParams) (StatusResponse, error) {
+	respBytes, err := h.API.SetSensorAttributes(id, attrs)
+	if err != nil {
+		return nil, err
+	}
+
+	var statusMsgs StatusResponse
+	if err := json.Unmarshal(respBytes, &statusMsgs); err != nil {
+		return nil, err
+	}
+
+	if errs := statusMsgs.Errors(); errs != nil {
+		return nil, errs
+	}
+
+	return statusMsgs, nil
+}
+
+func (h *Hue) SetSensorState(id string, state interface{}) (StatusResponse, error) {
+	respBytes, err := h.API.SetSensorState(id, state)
+	if err != nil {
+		return nil, err
+	}
+
+	var statusMsgs StatusResponse
+	if err := json.Unmarshal(respBytes, &statusMsgs); err != nil {
+		return nil, err
+	}
+
+	if errs := statusMsgs.Errors(); errs != nil {
+		return nil, errs
+	}
+
+	return statusMsgs, nil
 }

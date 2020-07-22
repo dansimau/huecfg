@@ -1,51 +1,23 @@
 package cmd
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/dansimau/huecfg/pkg/jsonutil"
-)
-
 // huecfg api scenes ...
 type apiScenesCmd struct {
-	All *apiLightsAllCmd `command:"all" description:"Gets a list of all scenes currently stored in the bridge."`
-	Get *apiLightsGetCmd `command:"get" description:"Gets the attributes of a given scene."`
+	Get    *apiLightsGetCmd    `command:"get" description:"Fetch the specified scene by ID"`
+	GetAll *apiLightsGetAllCmd `command:"get-all" description:"Fetch all scenes at once"`
 }
 
-func (c *apiScenesCmd) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetScenes()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// huecfg api scenes get ...
-type apiScenesCmdGet struct {
+// huecfg api scenes get-all
+//go:generate ./gen_api_read.sh ID=scenes_get_all TYPE=apiScenesGetAllCmd FUNC_CALL=bridge.GetScenes()
+type apiScenesGetAllCmd struct {
 	Arguments struct {
 		ID string
 	} `positional-args:"true" required:"true" positional-arg-name:"scene-ID"`
 }
 
-func (c *apiScenesCmdGet) Execute(args []string) error {
-	bridge := cmd.getHueAPI()
-
-	respBytes, err := bridge.GetScene(c.Arguments.ID)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-
-	if err := jsonutil.PrintBytes(respBytes); err != nil {
-		return err
-	}
-
-	return nil
+// huecfg api scenes get
+//go:generate ./gen_api_read.sh ID=scenes_get TYPE=apiScenesGetCmd FUNC_CALL=bridge.GetScene(c.Arguments.ID)
+type apiScenesGetCmd struct {
+	Arguments struct {
+		ID string
+	} `positional-args:"true" required:"true" positional-arg-name:"scene-ID"`
 }

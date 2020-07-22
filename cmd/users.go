@@ -5,13 +5,13 @@ import "github.com/dansimau/huecfg/pkg/hue"
 //go:generate ./gen_list.sh OBJS_NAME=users GET_OBJ_FUNC=GetConfig() OBJ_TRANSFORM_FUNC=configToUsersGenericSlice
 
 var usersDefaultFields = []string{
-	"APIKey",
-	"Name",
+	"Username",
+	"DeviceType",
 	"Created",
 	"LastUsed",
 }
 
-const usersDefaultSortField = "Name"
+const usersDefaultSortField = "DeviceType"
 
 var (
 	usersHeaderTransform headerTransform
@@ -30,10 +30,10 @@ type usersCmd struct {
 }
 
 type user struct {
-	APIKey   string
-	Created  hue.AbsoluteTime
-	LastUsed hue.AbsoluteTime
-	Name     string
+	Username   string
+	DeviceType string
+	Created    hue.AbsoluteTime
+	LastUsed   hue.AbsoluteTime
 }
 
 // capabilitiesToResourceUsageGenericSlice is customised for this particular
@@ -52,11 +52,24 @@ func configToUsersSlice(c hue.Config) []user {
 	users := []user{}
 	for key, v := range c.Whitelist {
 		users = append(users, user{
-			APIKey:   key,
-			Name:     v.Name,
-			Created:  v.CreateDate,
-			LastUsed: v.LastUseDate,
+			Username:   key,
+			DeviceType: v.Name,
+			Created:    v.CreateDate,
+			LastUsed:   v.LastUseDate,
 		})
+	}
+	return users
+}
+
+func configToUsersMap(c hue.Config) map[string]user {
+	users := map[string]user{}
+	for key, v := range c.Whitelist {
+		users[key] = user{
+			Username:   key,
+			DeviceType: v.Name,
+			Created:    v.CreateDate,
+			LastUsed:   v.LastUseDate,
+		}
 	}
 	return users
 }

@@ -1,9 +1,26 @@
 package hue
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 )
+
+func (api *API) CreateResourceLink(data interface{}) ([]byte, error) {
+	postJSON, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPost(fmt.Sprintf("/api/%s/resourcelinks", api.username()), bytes.NewBuffer(postJSON))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
 
 // GetResourceLinks gets a list of all resourcelinks that have been added to the
 // bridge.

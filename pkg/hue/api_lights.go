@@ -79,3 +79,45 @@ func (api *API) SearchForNewLights(deviceIds ...string) ([]byte, error) {
 
 	return ioutil.ReadAll(resp.Body)
 }
+
+// SetLightAttributes is used to rename lights. A light can have its name
+// changed when in any state, including when it is unreachable or off.
+func (api *API) SetLightAttributes(id string, attrs interface{}) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
+
+	postJSON, err := json.Marshal(attrs)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPut(fmt.Sprintf("/api/%s/lights/%s", api.username(), id), bytes.NewBuffer(postJSON))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+// SetLightState allows you to turn the light on and off, modify the hue and
+// effects.
+func (api *API) SetLightState(id string, state interface{}) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
+
+	postJSON, err := json.Marshal(state)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPut(fmt.Sprintf("/api/%s/lights/%s/state", api.username(), id), bytes.NewBuffer(postJSON))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}

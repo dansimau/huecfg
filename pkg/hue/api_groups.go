@@ -1,6 +1,8 @@
 package hue
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 )
@@ -26,6 +28,44 @@ func (api *API) GetGroup(id string) ([]byte, error) {
 	}
 
 	resp, err := api.httpGet(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+func (api *API) SetGroupAttributes(id string, attrs interface{}) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
+
+	postJSON, err := json.Marshal(attrs)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPut(fmt.Sprintf("/api/%s/groups/%s", api.username(), id), bytes.NewBuffer(postJSON))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+func (api *API) SetGroupState(id string, state interface{}) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
+
+	postJSON, err := json.Marshal(state)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPut(fmt.Sprintf("/api/%s/groups/%s/state", api.username(), id), bytes.NewBuffer(postJSON))
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,8 @@
 package cmd
 
 import (
+	"bytes"
+	"io"
 	"os"
 	"reflect"
 
@@ -11,7 +13,7 @@ import (
 
 type groupsShowCmd struct {
 	Arguments struct {
-		ID string
+		IDs []string
 	} `positional-args:"true" required:"true" positional-arg-name:"group-ID"`
 }
 
@@ -33,24 +35,46 @@ func (c *groupsShowCmd) showCmdPostProcessFuncCall(bytes []byte) ([]byte, error)
 }
 
 func (c *groupsShowCmd) Execute(args []string) error {
+	if err := errorOnUnknownArgs(args); err != nil {
+		return err
+	}
+
 	bridge := cmd.getHue()
 
-	resp, err := bridge.GetGroup(c.Arguments.ID)
-	if err != nil {
-		return err
-	}
+	outputBytes := &bytes.Buffer{}
 
-	bytes, err := yaml.Marshal(resp)
-	if err != nil {
-		return err
-	}
-
-	if c.showCmdPostProcessFuncExists() {
-		bytes, err = c.showCmdPostProcessFuncCall(bytes)
+	for _, id := range c.Arguments.IDs {
+		resp, err := bridge.GetGroup(id)
 		if err != nil {
+			return err
+		}
+
+		bytes, err := yaml.Marshal(resp)
+		if err != nil {
+			return err
+		}
+
+		if c.showCmdPostProcessFuncExists() {
+			bytes, err = c.showCmdPostProcessFuncCall(bytes)
+			if err != nil {
+				return err
+			}
+		}
+
+		if len(c.Arguments.IDs) > 1 {
+			if _, err := outputBytes.Write([]byte("---\n")); err != nil {
+				return err
+			}
+		}
+
+		if err := yqlib.ColorizeAndPrint(bytes, outputBytes); err != nil {
 			return err
 		}
 	}
 
-	return yqlib.ColorizeAndPrint(bytes, os.Stdout)
+	if _, err := io.Copy(os.Stdout, outputBytes); err != nil {
+		return err
+	}
+
+	return nil
 }
