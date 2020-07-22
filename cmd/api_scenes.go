@@ -2,8 +2,15 @@ package cmd
 
 // huecfg api scenes ...
 type apiScenesCmd struct {
+	Create *apiScenesCreateCmd `command:"create" description:"Create a new scene"`
 	Get    *apiLightsGetCmd    `command:"get" description:"Fetch the specified scene by ID"`
 	GetAll *apiLightsGetAllCmd `command:"get-all" description:"Fetch all scenes at once"`
+}
+
+// huecfg api scenes create
+//go:generate ./gen_api_write.sh ID=scenes_create TYPE=apiScenesCreateCmd DATA=c.Data FUNC_CALL=bridge.CreateResourceLink(data)
+type apiScenesCreateCmd struct {
+	Data string `long:"data" description:"JSON data to send" default:"-"`
 }
 
 // huecfg api scenes get-all

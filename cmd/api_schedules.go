@@ -2,8 +2,15 @@ package cmd
 
 // huecfg api schedules ...
 type apiSchedulesCmd struct {
+	Create *apiSchedulesCreateCmd `command:"create" description:"Create a new scehdule"`
 	Get    *apiSchedulesGetCmd    `command:"get" description:"Fetch the specified schedule by ID"`
 	GetAll *apiSchedulesGetAllCmd `command:"get-all" description:"Fetch all schedule data at once"`
+}
+
+// huecfg api schedules create
+//go:generate ./gen_api_write.sh ID=schedules_create TYPE=apiSchedulesCreateCmd DATA=c.Data FUNC_CALL=bridge.CreateResourceLink(data)
+type apiSchedulesCreateCmd struct {
+	Data string `long:"data" description:"JSON data to send" default:"-"`
 }
 
 //go:generate ./gen_api_read.sh ID=schedules_all TYPE=apiSchedulesGetAllCmd FUNC_CALL=bridge.GetSchedules()
