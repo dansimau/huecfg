@@ -7,6 +7,37 @@ import (
 	"io/ioutil"
 )
 
+// CreateGroup creates a new group
+func (api *API) CreateGroup(data interface{}) ([]byte, error) {
+	postJSON, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPost(fmt.Sprintf("/api/%s/groups", api.username()), bytes.NewBuffer(postJSON))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+// DeleteGroup deletes a group from the bridge.
+func (api *API) DeleteGroup(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
+
+	resp, err := api.httpDelete(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
 // GetGroups gets a list of all groups that have been added to the bridge. A
 // group is a list of lights that can be created, modified and deleted by a
 // user.

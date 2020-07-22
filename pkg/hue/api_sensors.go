@@ -7,6 +7,37 @@ import (
 	"io/ioutil"
 )
 
+// CreateSensor creates a new sensor
+func (api *API) CreateSensor(data interface{}) ([]byte, error) {
+	postJSON, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPost(fmt.Sprintf("/api/%s/sensors", api.username()), bytes.NewBuffer(postJSON))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+// DeleteSensor deletes a sensor from the bridge.
+func (api *API) DeleteSensor(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
+
+	resp, err := api.httpDelete(fmt.Sprintf("/api/%s/sensors/%s", api.username(), id))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
 // GetSensors gets a list of all sensors that have been added to the bridge.
 func (api *API) GetSensors() ([]byte, error) {
 	resp, err := api.httpGet(fmt.Sprintf("/api/%s/sensors", api.username()))

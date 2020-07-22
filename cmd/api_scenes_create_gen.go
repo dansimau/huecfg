@@ -15,7 +15,7 @@ func (c *apiScenesCreateCmd) Execute(args []string) error {
 		return err
 	}
 
-	respBytes, err := bridge.CreateResourceLink(data)
+	respBytes, err := bridge.CreateScene(data)
 	if err != nil {
 		return err
 	}

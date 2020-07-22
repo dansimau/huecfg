@@ -15,7 +15,7 @@ func (c *apiSchedulesCreateCmd) Execute(args []string) error {
 		return err
 	}
 
-	respBytes, err := bridge.CreateResourceLink(data)
+	respBytes, err := bridge.CreateSchedule(data)
 	if err != nil {
 		return err
 	}

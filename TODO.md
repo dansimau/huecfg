@@ -33,13 +33,13 @@ TODO
       * [ ] set attributes
     * rules
       * [x] create
-      * [ ] delete
+      * [x] delete
       * [x] get all
       * [x] get
       * [ ] set attributes
     * scenes
       * [x] create
-      * [ ] delete
+      * [x] delete
       * [x] get all
       * [x] get
       * [ ] set
@@ -51,7 +51,7 @@ TODO
       * [ ] set
     * sensors
       * [x] create
-      * [ ] delete
+      * [x] delete
       * [x] get all
       * [x] get
       * [ ] get new

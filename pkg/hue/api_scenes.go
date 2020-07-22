@@ -1,9 +1,42 @@
 package hue
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 )
+
+// CreateScene creates a new scene
+func (api *API) CreateScene(data interface{}) ([]byte, error) {
+	postJSON, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := api.httpPost(fmt.Sprintf("/api/%s/scenes", api.username()), bytes.NewBuffer(postJSON))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+// DeleteScene deletes a scene from the bridge.
+func (api *API) DeleteScene(id string) ([]byte, error) {
+	if id == "" {
+		return nil, errEmptyID
+	}
+
+	resp, err := api.httpDelete(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
+}
 
 // GetScenes gets a list of all scenes currently stored in the bridge. Scenes
 // are represented by a scene id, a name and a list of lights which are part

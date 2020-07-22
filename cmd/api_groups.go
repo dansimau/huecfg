@@ -3,6 +3,7 @@ package cmd
 // huecfg api groups ...
 type apiGroupsCmd struct {
 	Create   *apiGroupsCreateCmd   `command:"create" description:"Create a new group"`
+	Delete   *apiGroupsDeleteCmd   `command:"delete" description:"Delete a device from the bridge"`
 	Get      *apiGroupsGetCmd      `command:"get" description:"Fetch the specified group by ID"`
 	GetAll   *apiGroupsGetAllCmd   `command:"get-all" description:"Fetch all group data at once"`
 	Set      *apiGroupsSetCmd      `command:"set" description:"Set attributes of a group"`
@@ -10,9 +11,17 @@ type apiGroupsCmd struct {
 }
 
 // huecfg api groups create
-//go:generate ./gen_api_write.sh ID=groups_create TYPE=apiGroupsCreateCmd DATA=c.Data FUNC_CALL=bridge.CreateResourceLink(data)
+//go:generate ./gen_api_write.sh ID=groups_create TYPE=apiGroupsCreateCmd DATA=c.Data FUNC_CALL=bridge.CreateGroup(data)
 type apiGroupsCreateCmd struct {
 	Data string `long:"data" description:"JSON data to send" default:"-"`
+}
+
+// huecfg api groups delete ...
+//go:generate ./gen_api_read.sh ID=groups_delete TYPE=apiGroupsDeleteCmd FUNC_CALL=bridge.DeleteGroup(c.Arguments.ID)
+type apiGroupsDeleteCmd struct {
+	Arguments struct {
+		ID string `description:"ID of the group to delete."`
+	} `positional-args:"true" required:"true" positional-arg-name:"group-ID"`
 }
 
 // huecfg api groups get-all

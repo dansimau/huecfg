@@ -15,7 +15,7 @@ func (c *apiGroupsCreateCmd) Execute(args []string) error {
 		return err
 	}
 
-	respBytes, err := bridge.CreateResourceLink(data)
+	respBytes, err := bridge.CreateGroup(data)
 	if err != nil {
 		return err
 	}

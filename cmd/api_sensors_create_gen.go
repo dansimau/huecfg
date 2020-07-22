@@ -15,7 +15,7 @@ func (c *apiSensorsCreateCmd) Execute(args []string) error {
 		return err
 	}
 
-	respBytes, err := bridge.CreateResourceLink(data)
+	respBytes, err := bridge.CreateSensor(data)
 	if err != nil {
 		return err
 	}
