@@ -1,26 +1,12 @@
 package hue
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 )
 
 // CreateScene creates a new scene
 func (api *API) CreateScene(data interface{}) ([]byte, error) {
-	postJSON, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPost(fmt.Sprintf("/api/%s/scenes", api.username()), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.post(fmt.Sprintf("/api/%s/scenes", api.username()), data)
 }
 
 // DeleteScene deletes a scene from the bridge.
@@ -29,13 +15,7 @@ func (api *API) DeleteScene(id string) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	resp, err := api.httpDelete(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.delete(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
 }
 
 // GetScenes gets a list of all scenes currently stored in the bridge. Scenes
@@ -50,13 +30,7 @@ func (api *API) DeleteScene(id string) ([]byte, error) {
 // stored in the Android and iOS Hue apps. In the apps these scenes are stored
 // internally. Once activated they may then appear as a bridge scene.
 func (api *API) GetScenes() ([]byte, error) {
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/scenes", api.username()))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s/scenes", api.username()))
 }
 
 // GetScene get the attributes of a given scene. Please note that lightstates
@@ -67,11 +41,5 @@ func (api *API) GetScene(id string) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
 }

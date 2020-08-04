@@ -1,10 +1,7 @@
 package hue
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 )
 
 // CreateUser creates a new user. The link button on the bridge must be pressed and this command executed within 30
@@ -25,29 +22,12 @@ func (api *API) CreateUser(deviceType string, generateClientKey bool) ([]byte, e
 		params.GenerateClientKey = &generateClientKey
 	}
 
-	postJSON, err := json.Marshal(&params)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPost(fmt.Sprintf("/api"), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.post(fmt.Sprintf("/api"), &params)
 }
 
 // GetConfig returns list of all configuration elements in the bridge. Note all times are stored in UTC.
 func (api *API) GetConfig() ([]byte, error) {
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/config", api.username()))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s/config", api.username()))
 }
 
 // GetFullState is used to fetch the entire datastore from the device,
@@ -55,11 +35,5 @@ func (api *API) GetConfig() ([]byte, error) {
 // configuration. It should only be used sparingly as it is resource intensive
 // for the bridge, but is supplied e.g. for synchronization purposes.
 func (api *API) GetFullState() ([]byte, error) {
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s", api.username()))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s", api.username()))
 }

@@ -1,9 +1,11 @@
 package hue
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"os"
@@ -71,6 +73,22 @@ func (api *API) debugResp(resp *http.Response) {
 	}
 }
 
+func (api *API) get(path string) (response []byte, err error) {
+	return api.httpReq("GET", path, nil)
+}
+
+func (api *API) delete(path string) (response []byte, err error) {
+	return api.httpReq("DELETE", path, nil)
+}
+
+func (api *API) post(path string, data interface{}) (response []byte, err error) {
+	return api.httpReq("POST", path, data)
+}
+
+func (api *API) put(path string, data interface{}) (response []byte, err error) {
+	return api.httpReq("POST", path, data)
+}
+
 func (api *API) httpDo(req *http.Request) (*http.Response, error) {
 	client := api.Client
 	if client == nil {
@@ -83,63 +101,31 @@ func (api *API) httpDo(req *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
-func (api *API) httpGet(path string) (*http.Response, error) {
+func (api *API) httpReq(method string, path string, data interface{}) (response []byte, err error) {
 	url, err := api.url(path)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(api.context(), "GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	return api.httpDo(req)
-}
-
-func (api *API) httpPost(path string, body io.Reader) (*http.Response, error) {
-	url, err := api.url(path)
+	jsonBody, err := json.Marshal(data)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(api.context(), "POST", url, body)
+	req, err := http.NewRequestWithContext(api.context(), method, url, bytes.NewBuffer(jsonBody))
 	if err != nil {
 		return nil, err
 	}
 
 	req.Header.Add("Content-Type", "application/json")
 
-	return api.httpDo(req)
-}
-
-func (api *API) httpPut(path string, body io.Reader) (*http.Response, error) {
-	url, err := api.url(path)
+	resp, err := api.httpDo(req)
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
-	req, err := http.NewRequestWithContext(api.context(), "PUT", url, body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", "application/json")
-
-	return api.httpDo(req)
-}
-
-func (api *API) httpDelete(path string) (*http.Response, error) {
-	url, err := api.url(path)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequestWithContext(api.context(), "DELETE", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return api.httpDo(req)
+	return ioutil.ReadAll(resp.Body)
 }
 
 func (api *API) username() string {

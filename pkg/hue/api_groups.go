@@ -1,26 +1,12 @@
 package hue
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 )
 
 // CreateGroup creates a new group
 func (api *API) CreateGroup(data interface{}) ([]byte, error) {
-	postJSON, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPost(fmt.Sprintf("/api/%s/groups", api.username()), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.post(fmt.Sprintf("/api/%s/groups", api.username()), data)
 }
 
 // DeleteGroup deletes a group from the bridge.
@@ -29,26 +15,14 @@ func (api *API) DeleteGroup(id string) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	resp, err := api.httpDelete(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.delete(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
 }
 
 // GetGroups gets a list of all groups that have been added to the bridge. A
 // group is a list of lights that can be created, modified and deleted by a
 // user.
 func (api *API) GetGroups() ([]byte, error) {
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/groups", api.username()))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s/groups", api.username()))
 }
 
 // GetGroup gets the group attributes, e.g. name, light membership and last
@@ -58,13 +32,7 @@ func (api *API) GetGroup(id string) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
 }
 
 func (api *API) SetGroupAttributes(id string, attrs interface{}) ([]byte, error) {
@@ -72,18 +40,7 @@ func (api *API) SetGroupAttributes(id string, attrs interface{}) ([]byte, error)
 		return nil, errEmptyID
 	}
 
-	postJSON, err := json.Marshal(attrs)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPut(fmt.Sprintf("/api/%s/groups/%s", api.username(), id), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.put(fmt.Sprintf("/api/%s/groups/%s", api.username(), id), attrs)
 }
 
 func (api *API) SetGroupState(id string, state interface{}) ([]byte, error) {
@@ -91,16 +48,5 @@ func (api *API) SetGroupState(id string, state interface{}) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	postJSON, err := json.Marshal(state)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPut(fmt.Sprintf("/api/%s/groups/%s/state", api.username(), id), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.put(fmt.Sprintf("/api/%s/groups/%s/state", api.username(), id), state)
 }

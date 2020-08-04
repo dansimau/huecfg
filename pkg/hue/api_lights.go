@@ -1,10 +1,7 @@
 package hue
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 )
 
 // DeleteLight deletes a light from the bridge.
@@ -13,24 +10,12 @@ func (api *API) DeleteLight(id string) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	resp, err := api.httpDelete(fmt.Sprintf("/api/%s/lights/%s", api.username(), id))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.delete(fmt.Sprintf("/api/%s/lights/%s", api.username(), id))
 }
 
 // GetLights gets a list of all lights that have been discovered by the bridge.
 func (api *API) GetLights() ([]byte, error) {
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/lights", api.username()))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s/lights", api.username()))
 }
 
 // GetLight light attributes and state.
@@ -39,13 +24,7 @@ func (api *API) GetLight(id string) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	resp, err := api.httpGet(fmt.Sprintf("/api/%s/lights/%s", api.username(), id))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.get(fmt.Sprintf("/api/%s/lights/%s", api.username(), id))
 }
 
 // SearchForNewLights starts searching for new lights.
@@ -66,18 +45,7 @@ func (api *API) SearchForNewLights(deviceIds ...string) ([]byte, error) {
 		DeviceIDs []string `json:"deviceid,omitempty"`
 	}{deviceIds}
 
-	postJSON, err := json.Marshal(&params)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPost(fmt.Sprintf("/api/%s/lights", api.username()), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.post(fmt.Sprintf("/api/%s/lights", api.username()), &params)
 }
 
 // SetLightAttributes is used to rename lights. A light can have its name
@@ -87,18 +55,7 @@ func (api *API) SetLightAttributes(id string, attrs interface{}) ([]byte, error)
 		return nil, errEmptyID
 	}
 
-	postJSON, err := json.Marshal(attrs)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPut(fmt.Sprintf("/api/%s/lights/%s", api.username(), id), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.put(fmt.Sprintf("/api/%s/lights/%s", api.username(), id), attrs)
 }
 
 // SetLightState allows you to turn the light on and off, modify the hue and
@@ -108,16 +65,5 @@ func (api *API) SetLightState(id string, state interface{}) ([]byte, error) {
 		return nil, errEmptyID
 	}
 
-	postJSON, err := json.Marshal(state)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := api.httpPut(fmt.Sprintf("/api/%s/lights/%s/state", api.username(), id), bytes.NewBuffer(postJSON))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	return ioutil.ReadAll(resp.Body)
+	return api.put(fmt.Sprintf("/api/%s/lights/%s/state", api.username(), id), state)
 }
