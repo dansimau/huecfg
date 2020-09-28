@@ -12,7 +12,7 @@ func (api *API) CreateResourceLink(data interface{}) ([]byte, error) {
 // DeleteResourceLink deletes a resourcelink from the bridge.
 func (api *API) DeleteResourceLink(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.delete(fmt.Sprintf("/api/%s/resourcelinks/%s", api.username(), id))
@@ -27,7 +27,7 @@ func (api *API) GetResourceLinks() ([]byte, error) {
 // GetResourceLink gets all attributes for a resourcelink.
 func (api *API) GetResourceLink(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.get(fmt.Sprintf("/api/%s/resourcelinks/%s", api.username(), id))

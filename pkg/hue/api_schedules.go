@@ -12,7 +12,7 @@ func (api *API) CreateSchedule(data interface{}) ([]byte, error) {
 // DeleteSchedule deletes a schedule from the bridge.
 func (api *API) DeleteSchedule(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.delete(fmt.Sprintf("/api/%s/schedules/%s", api.username(), id))
@@ -27,7 +27,7 @@ func (api *API) GetSchedules() ([]byte, error) {
 // GetSchedule gets all attributes for a schedule.
 func (api *API) GetSchedule(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.get(fmt.Sprintf("/api/%s/schedules/%s", api.username(), id))

@@ -6,61 +6,68 @@ import (
 
 // Light represents a light object returned by the Hue Bridge.
 type Light struct {
-	ID string
-	// The hardware model of the light.
-	ModelID          string
+	ID               string
+	ModelID          string // The hardware model of the light.
 	ManufacturerName string
-	// A unique, editable name given to the light.
-	Name        string
-	ProductName string
-	SWVersion   string
-	// A fixed name describing the type of light e.g. "Extended color light".
-	Type string
-	// Unique id of the device. The MAC address of the device with a unique endpoint id in the form: AA:BB:CC:DD:EE:FF:00:11-XX
-	UniqueID string
+	Name             string // A unique, editable name given to the light.
+	ProductName      string
+	SWVersion        string
+	Type             string // A fixed name describing the type of light e.g. "Extended color light".
+	UniqueID         string // Unique id of the device. The MAC address of the device with a unique endpoint id in the form: AA:BB:CC:DD:EE:FF:00:11-XX
 
-	Capabilities struct {
-		Certified bool
-		Control   struct {
-			MinDimLevel    int
-			MaxLumen       int
-			ColorGamutType string
-			ColorGamut     [][]float64 // TODO: proper type
-			CT             struct {    // TODO: verify camelcase
-				Min int
-				Max int
-			}
-		}
-		Streaming struct {
-			Renderer bool
-			Proxy    bool
-		}
-	}
+	Capabilities LightCapabilities
+	Config       LightConfig
+	State        LightState
+	SWUpdate     LightSWUpdate
+}
 
-	Config struct { // TODO: verify these types
-		Archetype string
-		Function  string
-		Direction string
-	}
+type LightCapabilities struct {
+	Certified bool
+	Control   LightControlCapabilities
+	Streaming LightStreamingCapabilities
+}
 
-	State struct { // TODO: verify all of these field types
-		On        bool
-		Bri       int
-		Hue       int
-		Sat       int
-		Effect    string    // TODO: can be "none"
-		XY        []float64 // TODO: make this proper pair type
-		CT        int
-		Alert     string
-		ColorMode string
-		Mode      string
-		Reachable bool
-	}
+type LightColorTemperature struct {
+	Min int
+	Max int
+}
 
-	SWUpdate struct {
-		State       string
-		LastInstall *AbsoluteTime
-	}
+type LightConfig struct { // TODO: verify these types
+	Archetype string
+	Function  string
+	Direction string
+}
+
+type LightControlCapabilities struct {
+	MinDimLevel    int
+	MaxLumen       int
+	ColorGamutType string
+	ColorGamut     [][]float64 // TODO: proper type
+	CT             LightColorTemperature
+}
+
+type LightState struct { // TODO: verify all of these field types
+	On        bool
+	Bri       int
+	Hue       int
+	Sat       int
+	Effect    string    // TODO: can be "none"
+	XY        []float64 // TODO: make this proper pair type
+	CT        int
+	Alert     string
+	ColorMode string
+	Mode      string
+	Reachable bool
+}
+
+type LightStreamingCapabilities struct {
+	Renderer bool
+	Proxy    bool
+}
+
+type LightSWUpdate struct {
+	State       string
+	LastInstall *AbsoluteTime
 }
 
 type SetLightAttributeParams struct {
@@ -85,17 +92,7 @@ func (h *Hue) DeleteLight(id string) (Success, error) {
 		return Success{}, err
 	}
 
-	successMsg, err := statusMsg.ToSuccess()
-	if err != nil {
-		return Success{}, err
-	}
-
-	errorMsg, err := statusMsg.ToError()
-	if err != nil {
-		return Success{}, err
-	}
-
-	return *successMsg, errorMsg
+	return *statusMsg.Success, statusMsg.Error
 }
 
 // GetLights gets a list of all lights that have been discovered by the bridge.

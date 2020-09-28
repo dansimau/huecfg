@@ -2,7 +2,6 @@ package hue
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -62,44 +61,16 @@ func (s SuccessMessages) String() string {
 }
 
 type Status struct {
-	Success json.RawMessage
-	Error   json.RawMessage
-}
-
-func (s Status) ToSuccess() (*Success, error) {
-	v := &Success{}
-	if err := json.Unmarshal(s.Success, &v); err != nil {
-		return nil, err
-	}
-
-	return v, nil
-}
-
-func (s Status) ToError() (*Error, error) {
-	v := &Error{}
-	if err := json.Unmarshal(s.Error, &v); err != nil {
-		return nil, err
-	}
-
-	return v, nil
-}
-
-func (s Status) ToInterface() (interface{}, error) {
-	if v, err := s.ToError(); err == nil {
-		return v, nil
-	}
-	if v, err := s.ToSuccess(); err == nil {
-		return v, nil
-	}
-	return nil, errors.New("unknown status type or not a valid status")
+	Success *Success `json:,omitempty`
+	Error   *Error   `json:,omitempty`
 }
 
 type StatusResponse []Status
 
 func (s StatusResponse) SuccessMessages() (successes SuccessMessages) {
 	for _, status := range s {
-		if statusSuccess, _ := status.ToSuccess(); statusSuccess != nil {
-			successes = append(successes, *statusSuccess)
+		if status.Success != nil {
+			successes = append(successes, *status.Success)
 		}
 	}
 	return successes
@@ -109,8 +80,8 @@ func (s StatusResponse) SuccessMessages() (successes SuccessMessages) {
 // response. If there are no errors, the MultiError slice will be nil.
 func (s StatusResponse) Errors() (errs MultiError) {
 	for _, status := range s {
-		if statusErr, _ := status.ToError(); statusErr != nil {
-			errs = append(errs, statusErr)
+		if status.Error != nil {
+			errs = append(errs, status.Error)
 		}
 	}
 	return errs

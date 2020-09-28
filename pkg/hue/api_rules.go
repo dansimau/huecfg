@@ -12,7 +12,7 @@ func (api *API) CreateRule(data interface{}) ([]byte, error) {
 // DeleteRule deletes a rule from the bridge.
 func (api *API) DeleteRule(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.delete(fmt.Sprintf("/api/%s/rules/%s", api.username(), id))
@@ -27,7 +27,7 @@ func (api *API) GetRules() ([]byte, error) {
 // not available.
 func (api *API) GetRule(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.get(fmt.Sprintf("/api/%s/rules/%s", api.username(), id))

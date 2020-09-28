@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	absoluteTimeFormat              = "2006-01-02T15:04:05"
-	absoluteTimeHumanReadableFormat = "2006-01-02 15:04:05"
+	AbsoluteTimeFormat              = "2006-01-02T15:04:05"
+	AbsoluteTimeHumanReadableFormat = "2006-01-02 15:04:05"
 )
 
 // AbsoluteTime is a custom time struct that supports JSON marshalling from
@@ -21,7 +21,7 @@ func (t AbsoluteTime) String() string {
 	if t.Time.IsZero() {
 		return ""
 	}
-	return t.Time.Format(absoluteTimeHumanReadableFormat)
+	return t.Time.Format(AbsoluteTimeHumanReadableFormat)
 }
 
 func (t *AbsoluteTime) UnmarshalJSON(b []byte) (err error) {
@@ -30,7 +30,7 @@ func (t *AbsoluteTime) UnmarshalJSON(b []byte) (err error) {
 		t.Time = time.Time{}
 		return
 	}
-	t.Time, err = time.Parse(absoluteTimeFormat, s)
+	t.Time, err = time.Parse(AbsoluteTimeFormat, s)
 	return
 }
 
@@ -38,5 +38,5 @@ func (t *AbsoluteTime) MarshalJSON() ([]byte, error) {
 	if t == nil {
 		return []byte("null"), nil
 	}
-	return []byte(fmt.Sprintf("\"%s\"", t.Time.Format(absoluteTimeFormat))), nil
+	return []byte(fmt.Sprintf("\"%s\"", t.Time.Format(AbsoluteTimeFormat))), nil
 }

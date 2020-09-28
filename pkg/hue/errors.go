@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	errEmptyID = errors.New("ID cannot be empty")
+	ErrEmptyID = errors.New("ID cannot be empty")
 )
 
 type MultiError []error

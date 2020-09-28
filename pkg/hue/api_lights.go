@@ -7,7 +7,7 @@ import (
 // DeleteLight deletes a light from the bridge.
 func (api *API) DeleteLight(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.delete(fmt.Sprintf("/api/%s/lights/%s", api.username(), id))
@@ -21,7 +21,7 @@ func (api *API) GetLights() ([]byte, error) {
 // GetLight light attributes and state.
 func (api *API) GetLight(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.get(fmt.Sprintf("/api/%s/lights/%s", api.username(), id))
@@ -52,7 +52,7 @@ func (api *API) SearchForNewLights(deviceIds ...string) ([]byte, error) {
 // changed when in any state, including when it is unreachable or off.
 func (api *API) SetLightAttributes(id string, attrs interface{}) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.put(fmt.Sprintf("/api/%s/lights/%s", api.username(), id), attrs)
@@ -62,7 +62,7 @@ func (api *API) SetLightAttributes(id string, attrs interface{}) ([]byte, error)
 // effects.
 func (api *API) SetLightState(id string, state interface{}) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.put(fmt.Sprintf("/api/%s/lights/%s/state", api.username(), id), state)

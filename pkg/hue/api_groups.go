@@ -12,7 +12,7 @@ func (api *API) CreateGroup(data interface{}) ([]byte, error) {
 // DeleteGroup deletes a group from the bridge.
 func (api *API) DeleteGroup(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.delete(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
@@ -29,7 +29,7 @@ func (api *API) GetGroups() ([]byte, error) {
 // command for a given group.
 func (api *API) GetGroup(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.get(fmt.Sprintf("/api/%s/groups/%s", api.username(), id))
@@ -37,7 +37,7 @@ func (api *API) GetGroup(id string) ([]byte, error) {
 
 func (api *API) SetGroupAttributes(id string, attrs interface{}) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.put(fmt.Sprintf("/api/%s/groups/%s", api.username(), id), attrs)
@@ -45,7 +45,7 @@ func (api *API) SetGroupAttributes(id string, attrs interface{}) ([]byte, error)
 
 func (api *API) SetGroupState(id string, state interface{}) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.put(fmt.Sprintf("/api/%s/groups/%s/state", api.username(), id), state)

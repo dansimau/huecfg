@@ -12,7 +12,7 @@ func (api *API) CreateSensor(data interface{}) ([]byte, error) {
 // DeleteSensor deletes a sensor from the bridge.
 func (api *API) DeleteSensor(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.delete(fmt.Sprintf("/api/%s/sensors/%s", api.username(), id))
@@ -26,7 +26,7 @@ func (api *API) GetSensors() ([]byte, error) {
 // GetSensor gets the sensor from the bridge with the given id.
 func (api *API) GetSensor(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.get(fmt.Sprintf("/api/%s/sensors/%s", api.username(), id))
@@ -36,7 +36,7 @@ func (api *API) GetSensor(id string) ([]byte, error) {
 // changed when in any state, including when it is unreachable or off.
 func (api *API) SetSensorAttributes(id string, attrs interface{}) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.put(fmt.Sprintf("/api/%s/sensors/%s", api.username(), id), attrs)
@@ -46,7 +46,7 @@ func (api *API) SetSensorAttributes(id string, attrs interface{}) ([]byte, error
 // configuration parameters depend on the sensor type.
 func (api *API) SetSensorConfig(id string, state interface{}) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.put(fmt.Sprintf("/api/%s/sensors/%s/config", api.username(), id), state)
@@ -55,7 +55,7 @@ func (api *API) SetSensorConfig(id string, state interface{}) ([]byte, error) {
 // SetSensorState sets the state of a CLIP sensor.
 func (api *API) SetSensorState(id string, state interface{}) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.put(fmt.Sprintf("/api/%s/sensors/%s/state", api.username(), id), state)

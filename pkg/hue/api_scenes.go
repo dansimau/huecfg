@@ -12,7 +12,7 @@ func (api *API) CreateScene(data interface{}) ([]byte, error) {
 // DeleteScene deletes a scene from the bridge.
 func (api *API) DeleteScene(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.delete(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
@@ -38,7 +38,7 @@ func (api *API) GetScenes() ([]byte, error) {
 // scenes).
 func (api *API) GetScene(id string) ([]byte, error) {
 	if id == "" {
-		return nil, errEmptyID
+		return nil, ErrEmptyID
 	}
 
 	return api.get(fmt.Sprintf("/api/%s/scenes/%s", api.username(), id))
