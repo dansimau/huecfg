@@ -86,7 +86,7 @@ func (api *API) post(path string, data interface{}) (response []byte, err error)
 }
 
 func (api *API) put(path string, data interface{}) (response []byte, err error) {
-	return api.httpReq("POST", path, data)
+	return api.httpReq("PUT", path, data)
 }
 
 func (api *API) httpDo(req *http.Request) (*http.Response, error) {
