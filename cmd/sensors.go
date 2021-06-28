@@ -27,8 +27,9 @@ func init() {
 }
 
 type sensorsCmd struct {
-	SensorsList     *sensorsListCmd     `command:"list" alias:"ls" description:"List sensors"`
-	SensorsSetAttr  *sensorsSetAttrCmd  `command:"set-attr" description:"Set attributes of a sensor"`
-	SensorsSetState *sensorsSetStateCmd `command:"set-state" description:"Set state of a sensor"`
-	SensorsShow     *sensorsShowCmd     `command:"show" description:"Gets the sensor from the bridge with the given ID"`
+	SensorsList      *sensorsListCmd      `command:"list" alias:"ls" description:"List sensors"`
+	SensorsSetAttr   *sensorsSetAttrCmd   `command:"set-attr" description:"Set attributes of a sensor"`
+	SensorsSetConfig *sensorsSetConfigCmd `command:"set-config" description:"Set config of a sensor"`
+	SensorsSetState  *sensorsSetStateCmd  `command:"set-state" description:"Set state of a sensor"`
+	SensorsShow      *sensorsShowCmd      `command:"show" description:"Gets the sensor from the bridge with the given ID"`
 }

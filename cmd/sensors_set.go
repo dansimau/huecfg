@@ -29,6 +29,33 @@ func (c *sensorsSetAttrCmd) Execute(args []string) error {
 	return nil
 }
 
+type sensorsSetConfigCmd struct {
+	Arguments struct {
+		ID string
+	} `positional-args:"true" required:"true" positional-arg-name:"sensor-ID"`
+
+	On *bool `long:"on" description:"Enable/disable the sensor"`
+}
+
+func (c *sensorsSetConfigCmd) Execute(args []string) error {
+	if err := errorOnUnknownArgs(args); err != nil {
+		return err
+	}
+
+	bridge := cmd.getHue()
+
+	attrs := hue.SetSensorConfigDefaultParams{
+		On: c.On,
+	}
+
+	_, err := bridge.SetSensorConfig(c.Arguments.ID, attrs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 type sensorsSetStateCmd struct {
 }
 

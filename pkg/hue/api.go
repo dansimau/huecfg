@@ -107,12 +107,18 @@ func (api *API) httpReq(method string, path string, data interface{}) (response 
 		return nil, err
 	}
 
-	jsonBody, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
+	body := &bytes.Buffer{}
+
+	if data != nil {
+		jsonBody, err := json.Marshal(data)
+		if err != nil {
+			return nil, err
+		}
+
+		body = bytes.NewBuffer(jsonBody)
 	}
 
-	req, err := http.NewRequestWithContext(api.context(), method, url, bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequestWithContext(api.context(), method, url, body)
 	if err != nil {
 		return nil, err
 	}

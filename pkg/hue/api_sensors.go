@@ -44,12 +44,12 @@ func (api *API) SetSensorAttributes(id string, attrs interface{}) ([]byte, error
 
 // SetSensorConfig changes sensor configuration parameters. The allowed
 // configuration parameters depend on the sensor type.
-func (api *API) SetSensorConfig(id string, state interface{}) ([]byte, error) {
+func (api *API) SetSensorConfig(id string, config interface{}) ([]byte, error) {
 	if id == "" {
 		return nil, ErrEmptyID
 	}
 
-	return api.put(fmt.Sprintf("/api/%s/sensors/%s/config", api.username(), id), state)
+	return api.put(fmt.Sprintf("/api/%s/sensors/%s/config", api.username(), id), config)
 }
 
 // SetSensorState sets the state of a CLIP sensor.
