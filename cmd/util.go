@@ -58,6 +58,7 @@ func printTable(rows [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetAutoFormatHeaders(false)
 	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAutoWrapText(false)
 	table.SetHeader(rows[0])
 
 	for _, row := range rows[1:] {
@@ -79,6 +80,12 @@ func reflectValueToString(v reflect.Value) string {
 		}
 	case reflect.Int:
 		return strconv.Itoa(int(v.Int()))
+	case reflect.Slice:
+		values := []string{}
+		for i := 0; i < v.Len(); i++ {
+			values = append(values, reflectValueToString(v.Index(i)))
+		}
+		return strings.Join(values, ", ")
 	default:
 		if v.Type().Implements(stringerType) {
 			return v.MethodByName("String").Call([]reflect.Value{})[0].String()

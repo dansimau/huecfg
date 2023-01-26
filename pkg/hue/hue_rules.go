@@ -2,6 +2,7 @@ package hue
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 type Rule struct {
@@ -28,6 +29,10 @@ type Condition struct {
 	Address  string
 	Operator string
 	Value    string
+}
+
+func (v Condition) String() string {
+	return fmt.Sprintf("%s %s \"%s\"", v.Address, v.Operator, v.Value)
 }
 
 // GetRules gets a list of all rules that are in the bridge.
