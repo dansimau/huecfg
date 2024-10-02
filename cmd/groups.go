@@ -2,7 +2,7 @@ package cmd
 
 import "gopkg.in/yaml.v3"
 
-//go:generate ./gen_list.sh OBJS_NAME=groups OBJS_TYPE=[]hue.Group GET_OBJ_FUNC=GetGroups()
+//go:generate ./gen_list.sh OBJS_NAME=groups OBJS_TYPE=[]huev1.Group GET_OBJ_FUNC=GetGroups()
 //go:generate ./gen_show.sh OBJ_NAME=group GET_OBJ_FUNC=GetGroup
 
 const groupsDefaultSortField = "ID"

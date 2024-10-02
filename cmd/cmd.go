@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dansimau/huecfg/pkg/hue"
+	"github.com/dansimau/huecfg/pkg/huev1"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/mitchellh/go-homedir"
 )
@@ -55,8 +55,8 @@ func Run(args []string) (exitCode int) {
 	return 0
 }
 
-func (c *Cmd) getHueAPI() *hue.API {
-	h := &hue.API{
+func (c *Cmd) getHueAPI() *huev1.API {
+	h := &huev1.API{
 		Host:     c.Host,
 		Username: c.Username,
 	}
@@ -68,8 +68,8 @@ func (c *Cmd) getHueAPI() *hue.API {
 	return h
 }
 
-func (c *Cmd) getHue() *hue.Hue {
-	h := hue.NewConn(c.Host, c.Username)
+func (c *Cmd) getHue() *huev1.Hue {
+	h := huev1.NewConn(c.Host, c.Username)
 
 	if len(cmd.Verbose) > 0 {
 		h.API.Debug = true

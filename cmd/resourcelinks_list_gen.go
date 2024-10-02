@@ -4,11 +4,11 @@ package cmd
 import (
 	"strings"
 
-	"github.com/dansimau/huecfg/pkg/hue"
+	"github.com/dansimau/huecfg/pkg/huev1"
 	"github.com/iancoleman/strcase"
 )
 
-func resourcelinksToGenericSlice(s []hue.ResourceLink) []interface{} {
+func resourcelinksToGenericSlice(s []huev1.ResourceLink) []interface{} {
 	var res = make([]interface{}, len(s))
 	for i, obj := range s {
 		res[i] = obj

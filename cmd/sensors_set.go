@@ -1,6 +1,6 @@
 package cmd
 
-import "github.com/dansimau/huecfg/pkg/hue"
+import "github.com/dansimau/huecfg/pkg/huev1"
 
 type sensorsSetAttrCmd struct {
 	Arguments struct {
@@ -17,7 +17,7 @@ func (c *sensorsSetAttrCmd) Execute(args []string) error {
 
 	bridge := cmd.getHue()
 
-	attrs := hue.SetSensorAttributeParams{
+	attrs := huev1.SetSensorAttributeParams{
 		Name: c.Name,
 	}
 
@@ -44,7 +44,7 @@ func (c *sensorsSetConfigCmd) Execute(args []string) error {
 
 	bridge := cmd.getHue()
 
-	attrs := hue.SetSensorConfigDefaultParams{
+	attrs := huev1.SetSensorConfigDefaultParams{
 		On: c.On,
 	}
 
@@ -56,8 +56,7 @@ func (c *sensorsSetConfigCmd) Execute(args []string) error {
 	return nil
 }
 
-type sensorsSetStateCmd struct {
-}
+type sensorsSetStateCmd struct{}
 
 func (c *sensorsSetStateCmd) Execute(args []string) error {
 	params, args, err := extractParams(args)

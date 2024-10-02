@@ -1,8 +1,6 @@
 package cmd
 
-import (
-	"github.com/dansimau/huecfg/pkg/hue"
-)
+import "github.com/dansimau/huecfg/pkg/huev1"
 
 type lightsSetAttrCmd struct {
 	Arguments struct {
@@ -23,7 +21,7 @@ func (c *lightsSetAttrCmd) Execute(args []string) error {
 
 	bridge := cmd.getHue()
 
-	attrs := hue.SetLightAttributeParams{
+	attrs := huev1.SetLightAttributeParams{
 		Name: c.Name,
 	}
 
@@ -52,7 +50,7 @@ func (c *lightsSetStateCmd) ExecuteNoArgs(args []string) error {
 
 	bridge := cmd.getHue()
 
-	params := hue.SetLightStateParams{
+	params := huev1.SetLightStateParams{
 		Bri: c.Brightness,
 	}
 

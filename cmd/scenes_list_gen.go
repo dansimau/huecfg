@@ -4,11 +4,11 @@ package cmd
 import (
 	"strings"
 
-	"github.com/dansimau/huecfg/pkg/hue"
+	"github.com/dansimau/huecfg/pkg/huev1"
 	"github.com/iancoleman/strcase"
 )
 
-func scenesToGenericSlice(s []hue.Scene) []interface{} {
+func scenesToGenericSlice(s []huev1.Scene) []interface{} {
 	var res = make([]interface{}, len(s))
 	for i, obj := range s {
 		res[i] = obj

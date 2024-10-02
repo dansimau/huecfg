@@ -2,7 +2,7 @@ package cmd
 
 import "gopkg.in/yaml.v3"
 
-//go:generate ./gen_list.sh OBJS_NAME=scenes OBJS_TYPE=[]hue.Scene GET_OBJ_FUNC=GetScenes()
+//go:generate ./gen_list.sh OBJS_NAME=scenes OBJS_TYPE=[]huev1.Scene GET_OBJ_FUNC=GetScenes()
 //go:generate ./gen_show.sh OBJ_NAME=scene GET_OBJ_FUNC=GetScene
 
 const scenesDefaultSortField = "ID"

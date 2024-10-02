@@ -1,6 +1,6 @@
 package cmd
 
-//go:generate ./gen_list.sh OBJS_NAME=sensors OBJS_TYPE=[]hue.Sensor GET_OBJ_FUNC=GetSensors()
+//go:generate ./gen_list.sh OBJS_NAME=sensors OBJS_TYPE=[]huev1.Sensor GET_OBJ_FUNC=GetSensors()
 //go:generate ./gen_show.sh OBJ_NAME=sensor GET_OBJ_FUNC=GetSensor
 
 const sensorsDefaultSortField = "ID"

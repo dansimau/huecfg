@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/dansimau/huecfg/pkg/hue"
+	"github.com/dansimau/huecfg/pkg/huev1"
 	"github.com/gorilla/mux"
 	"github.com/mcuadros/go-lookup"
 )
@@ -35,9 +35,10 @@ func (b *Bridge) router() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/api", notImplementedHandler)
 	r.HandleFunc("/api/{username}", notImplementedHandler)
-	r.HandleFunc("/api/{username}/{entity}", b.entityHandler)
-	r.HandleFunc("/api/{username}/{entity}/{id}", b.entityHandler)
-	r.HandleFunc("/api/{username}/{entity}/{id}/{path:state}", b.entityHandler)
+	r.HandleFunc("/api/{username}/{entity}", b.entityGetHandler).Methods("GET")
+	r.HandleFunc("/api/{username}/{entity}", b.entityDeleteHandler).Methods("DELETE")
+	r.HandleFunc("/api/{username}/{entity}/{id}", b.entityGetHandler).Methods("GET")
+	r.HandleFunc("/api/{username}/{entity}/{id}/{path:state}", b.entityGetHandler).Methods("GET")
 	return r
 }
 
@@ -78,7 +79,10 @@ func notImplementedHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func (b *Bridge) entityHandler(w http.ResponseWriter, r *http.Request) {
+func (b *Bridge) entityDeleteHandler(w http.ResponseWriter, r *http.Request) {
+}
+
+func (b *Bridge) entityGetHandler(w http.ResponseWriter, r *http.Request) {
 	jsonPath := []string{}
 	vars := mux.Vars(r)
 
@@ -97,9 +101,9 @@ func (b *Bridge) entityHandler(w http.ResponseWriter, r *http.Request) {
 		if err == lookup.ErrKeyNotFound {
 			w.WriteHeader(404)
 
-			res := hue.StatusResponse{
-				hue.Status{
-					Error: &hue.Error{
+			res := huev1.StatusResponse{
+				huev1.Status{
+					Error: &huev1.Error{
 						Address:     r.URL.Path,
 						Description: "resource, " + r.URL.Path + ", not available",
 						Type:        3,

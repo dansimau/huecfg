@@ -4,7 +4,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//go:generate ./gen_list.sh OBJS_NAME=resourcelinks OBJS_TYPE=[]hue.ResourceLink GET_OBJ_FUNC=GetResourceLinks()
+//go:generate ./gen_list.sh OBJS_NAME=resourcelinks OBJS_TYPE=[]huev1.ResourceLink GET_OBJ_FUNC=GetResourceLinks()
 //go:generate ./gen_show.sh OBJ_NAME=resourcelink GET_OBJ_FUNC=GetResourceLink
 
 const resourcelinksDefaultSortField = "ID"

@@ -13,7 +13,7 @@ for arg in "$@"; do
 done
 
 #OBJS_NAME=lights
-#OBJS_TYPE="[]hue.Light"
+#OBJS_TYPE="[]huev1.Light"
 #GET_OBJ_FUNC="GetLights()"
 #OBJ_TRANSFORM_FUNC=""
 
@@ -45,7 +45,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dansimau/huecfg/pkg/hue"
+	"github.com/dansimau/huecfg/pkg/huev1"
 	"github.com/iancoleman/strcase"
 )
 $(include_transform_func)

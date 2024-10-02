@@ -1,6 +1,6 @@
 package cmd
 
-import "github.com/dansimau/huecfg/pkg/hue"
+import "github.com/dansimau/huecfg/pkg/huev1"
 
 //go:generate ./gen_list.sh OBJS_NAME=free GET_OBJ_FUNC=GetCapabilities() OBJ_TRANSFORM_FUNC=capabilitiesToResourceUsageGenericSlice
 
@@ -33,18 +33,18 @@ type resourceUsage struct {
 }
 
 // capabilitiesToResourceUsageGenericSlice is customised for this particular
-// cmd. We take a hue.Capabilities object and turn it into a slice of objects
+// cmd. We take a huev1.Capabilities object and turn it into a slice of objects
 // so we can reuse the existing list command codegen.
-func capabilitiesToResourceUsageGenericSlice(c hue.Capabilities) []interface{} {
+func capabilitiesToResourceUsageGenericSlice(c huev1.Capabilities) []interface{} {
 	s := capabilitiesToResourceUsageSlice(c)
-	var res = make([]interface{}, len(s))
+	res := make([]interface{}, len(s))
 	for i, obj := range s {
 		res[i] = obj
 	}
 	return res
 }
 
-func capabilitiesToResourceUsageSlice(c hue.Capabilities) []resourceUsage {
+func capabilitiesToResourceUsageSlice(c huev1.Capabilities) []resourceUsage {
 	res := []resourceUsage{
 		{
 			Resource: "Groups",

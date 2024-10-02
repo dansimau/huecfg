@@ -2,7 +2,7 @@ package cmd
 
 import "gopkg.in/yaml.v3"
 
-//go:generate ./gen_list.sh OBJS_NAME=schedules OBJS_TYPE=[]hue.Schedule GET_OBJ_FUNC=GetSchedules()
+//go:generate ./gen_list.sh OBJS_NAME=schedules OBJS_TYPE=[]huev1.Schedule GET_OBJ_FUNC=GetSchedules()
 //go:generate ./gen_show.sh OBJ_NAME=schedule GET_OBJ_FUNC=GetSchedule
 
 const schedulesDefaultSortField = "ID"

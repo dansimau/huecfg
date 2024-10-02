@@ -1,6 +1,6 @@
 package cmd
 
-//go:generate ./gen_list.sh OBJS_NAME=lights OBJS_TYPE=[]hue.Light GET_OBJ_FUNC=GetLights()
+//go:generate ./gen_list.sh OBJS_NAME=lights OBJS_TYPE=[]huev1.Light GET_OBJ_FUNC=GetLights()
 //go:generate ./gen_show.sh OBJ_NAME=light GET_OBJ_FUNC=GetLight
 
 var lightsDefaultFields = []string{

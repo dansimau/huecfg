@@ -4,7 +4,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//go:generate ./gen_list.sh OBJS_NAME=rules OBJS_TYPE=[]hue.Rule GET_OBJ_FUNC=GetRules()
+//go:generate ./gen_list.sh OBJS_NAME=rules OBJS_TYPE=[]huev1.Rule GET_OBJ_FUNC=GetRules()
 //go:generate ./gen_show.sh OBJ_NAME=rule GET_OBJ_FUNC=GetRule
 
 const rulesDefaultSortField = "ID"

@@ -1,6 +1,6 @@
 package cmd
 
-import "github.com/dansimau/huecfg/pkg/hue"
+import "github.com/dansimau/huecfg/pkg/huev1"
 
 //go:generate ./gen_list.sh OBJS_NAME=users GET_OBJ_FUNC=GetConfig() OBJ_TRANSFORM_FUNC=configToUsersGenericSlice
 
@@ -32,23 +32,23 @@ type usersCmd struct {
 type user struct {
 	Username   string
 	DeviceType string
-	Created    hue.AbsoluteTime
-	LastUsed   hue.AbsoluteTime
+	Created    huev1.AbsoluteTime
+	LastUsed   huev1.AbsoluteTime
 }
 
 // capabilitiesToResourceUsageGenericSlice is customised for this particular
-// cmd. We take a hue.Capabilities object and turn it into a slice of objects
+// cmd. We take a huev1.Capabilities object and turn it into a slice of objects
 // so we can reuse the existing list command codegen.
-func configToUsersGenericSlice(c hue.Config) []interface{} {
+func configToUsersGenericSlice(c huev1.Config) []interface{} {
 	s := configToUsersSlice(c)
-	var res = make([]interface{}, len(s))
+	res := make([]interface{}, len(s))
 	for i, obj := range s {
 		res[i] = obj
 	}
 	return res
 }
 
-func configToUsersSlice(c hue.Config) []user {
+func configToUsersSlice(c huev1.Config) []user {
 	users := []user{}
 	for key, v := range c.Whitelist {
 		users = append(users, user{
@@ -61,7 +61,7 @@ func configToUsersSlice(c hue.Config) []user {
 	return users
 }
 
-func configToUsersMap(c hue.Config) map[string]user {
+func configToUsersMap(c huev1.Config) map[string]user {
 	users := map[string]user{}
 	for key, v := range c.Whitelist {
 		users[key] = user{

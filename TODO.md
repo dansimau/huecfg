@@ -111,5 +111,5 @@ TODO
     * [ ] create
     * [ ] delete
     * [x] list
-* pkg/hue
+* pkg/huev1
   * Hue Time (AbsoluteTime, etc)
