@@ -9,4 +9,5 @@ func init() {
 
 type apiCmd struct {
 	V1 *apiV1Cmd `command:"v1" description:"Interact with v1 of the Hue Bridge API"`
+	V2 *apiV2Cmd `command:"v2" description:"Interact with v2 (CLIP) of the Hue Bridge API"`
 }

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/dansimau/huecfg/pkg/huev1"
+	"github.com/dansimau/huecfg/pkg/huev2"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/mitchellh/go-homedir"
 )
@@ -48,7 +49,7 @@ func Run(args []string) (exitCode int) {
 			return 0
 		}
 
-		fmt.Fprintf(os.Stderr, "ERROR: %s\n", err)
+		fmt.Fprintf(os.Stderr, "ERROR: %+v\n", err)
 		return 1
 	}
 
@@ -60,6 +61,16 @@ func (c *Cmd) getHueAPI() *huev1.API {
 		Host:     c.Host,
 		Username: c.Username,
 	}
+
+	if len(cmd.Verbose) > 0 {
+		h.Debug = true
+	}
+
+	return h
+}
+
+func (c *Cmd) getHueAPIV2() *huev2.API {
+	h := huev2.New(c.Host, c.Username)
 
 	if len(cmd.Verbose) > 0 {
 		h.Debug = true
